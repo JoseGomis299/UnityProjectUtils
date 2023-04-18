@@ -18,18 +18,11 @@ namespace ProjectUtils.Attacking
     public void Attack(Vector3 shootPoint, Vector3 direction, int damage, int pierceCount, float pushForce,
       int areaDamage, float damageRadius, float bulletSpeed)
     {
-      Attack(shootPoint, direction, damage, pierceCount, pushForce, areaDamage, damageRadius, bulletSpeed, Vector3.one);
+      Attack(shootPoint, direction, damage, pierceCount, pushForce, areaDamage, damageRadius, bulletSpeed, Vector3.one, 0);
     }
 
     public void Attack(Vector3 shootPoint, Vector3 direction, int damage, int pierceCount, float pushForce,
-      int areaDamage, float damageRadius, float bulletSpeed, Vector3 bulletScale)
-    {
-      Attack(shootPoint, direction, damage, pierceCount, pushForce, areaDamage, damageRadius, bulletSpeed, bulletScale,
-        0);
-    }
-
-    public void Attack(Vector3 shootPoint, Vector3 direction, int damage, int pierceCount, float pushForce,
-      int areaDamage, float damageRadius, float bulletSpeed, Vector3 bulletScale, float imprecision)
+      int areaDamage, float damageRadius, float bulletSpeed, Vector3 bulletScale, float imprecision = 0)
     {
       SemiCircularAttack(shootPoint, direction, 1, damage, pushForce, pierceCount, areaDamage, damageRadius, bulletSpeed, bulletScale,  imprecision, 0, 0);
     }
