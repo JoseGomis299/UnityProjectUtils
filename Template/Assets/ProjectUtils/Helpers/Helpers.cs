@@ -57,8 +57,8 @@ namespace ProjectUtils.Helpers
 
             while (timer < time)
             {
-                timer += Time.deltaTime;
                 transform.localScale = initialScale + scaleDelta * (timer/time);
+                timer += Time.deltaTime;
                 yield return null;
             }
 
