@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -64,7 +65,28 @@ namespace ProjectUtils.Helpers
 
             transform.localScale = targetScale;
         }
-    
+
+        /// <summary>
+        /// <para>Scales the object to a target scale in a determined time</para>
+        /// <param name="targetScale">The target scale</param>
+        /// <param name="time">The duration in seconds of the scaling effect</param>
+        /// </summary>
+        public static async Task DoScaleAsync(this Transform transform, Vector3 targetScale, float time)
+        {
+            float timer = Time.deltaTime;
+            Vector3 initialScale = transform.localScale;
+            Vector3 scaleDelta = targetScale - initialScale;
+
+            while (timer < time)
+            {
+                transform.localScale = initialScale + scaleDelta * (timer/time);
+                await Task.Yield(); 
+                timer += Time.deltaTime;
+            }
+
+            transform.localScale = targetScale;
+        } 
+        
         /// <summary>
         /// <para>Moves the object, making a shake movement with a certain magnitude in a determined time</para>
         /// <param name="magnitude">The magnitude of the movement</param>
@@ -74,26 +96,45 @@ namespace ProjectUtils.Helpers
         public static void DoShake(this Transform transform, float magnitude, float time, bool moveZ = false) => CoroutineController.Start(DoShakeEnumerator(transform, magnitude, time, moveZ));
         private static IEnumerator DoShakeEnumerator(Transform transform, float magnitude, float time, bool moveZ)
         {
-            float timer = 0;
+            float duration = Time.time + time;
             Vector3 initialPosition = transform.position;
             Vector3 newPosition = initialPosition;
 
-            while (timer < time)
+            while (Time.time < duration)
             {
                 newPosition.x = initialPosition.x + Random.value * magnitude;
                 newPosition.y = initialPosition.y + Random.value * magnitude;
                 if(moveZ) newPosition.z = initialPosition.z + Random.value * magnitude;
                 transform.position = newPosition;
-
-                timer += Time.deltaTime;
                 yield return null;
             }
+            transform.position = initialPosition;
+        }
+        
+        /// <summary>
+        /// <para>Moves the object, making a shake movement with a certain magnitude in a determined time</para>
+        /// <param name="magnitude">The magnitude of the movement</param>
+        /// <param name="time">The duration in seconds of the shaking effect</param>
+        /// <param name="moveZ">Determines if the object moves in the z axis</param>
+        /// </summary>
+        private static async Task DoShakeAsync(this Transform transform, float magnitude, float time, bool moveZ = false)
+        {
+            float duration = Time.time + time;
+            Vector3 initialPosition = transform.position;
+            Vector3 newPosition = initialPosition;
 
+            while (Time.time < duration)
+            {
+                newPosition.x = initialPosition.x + Random.value * magnitude;
+                newPosition.y = initialPosition.y + Random.value * magnitude;
+                if(moveZ) newPosition.z = initialPosition.z + Random.value * magnitude;
+                transform.position = newPosition;
+                await Task.Yield();
+            }
             transform.position = initialPosition;
         }
 
         private static Dictionary<int, bool> _blinking;
-
         public static bool IsBlinking(this SpriteRenderer spriteRenderer)
         {
             _blinking ??= new Dictionary<int, bool>();
@@ -136,6 +177,38 @@ namespace ProjectUtils.Helpers
             spriteRenderer.color = initialColor;
             _blinking[id] = false;
         }
+        
+        /// <summary>
+        /// <para>Makes a blinking effect to the object</para>
+        /// <param name="duration">The duration in seconds of the blinking effect</param>
+        /// <param name="ticks">The number of times you want the object to blink</param>
+        /// <param name="targetColor">The color to change in every blink, normally transparent or white</param>
+        /// </summary>
+        private static async Task DoBlinkAsync(this SpriteRenderer spriteRenderer, float duration, int ticks, Color targetColor)
+        {
+            if (ticks <= 0) return;
+        
+            _blinking ??= new Dictionary<int, bool>();
+            int id = spriteRenderer.GetHashCode();
+            if(!_blinking.ContainsKey(id)) _blinking.Add( id , true);
+            else _blinking[id] = true;
+
+            float timer = 0;
+            Color initialColor = spriteRenderer.color;
+            int waitForSeconds = (int)(duration/ticks/2*1000);
+        
+            while (timer<duration)
+            {
+                spriteRenderer.color = targetColor;
+                await Task.Delay(waitForSeconds);
+                spriteRenderer.color = initialColor;
+                await Task.Delay(waitForSeconds);
+                timer += duration / ticks;
+            }
+
+            spriteRenderer.color = initialColor;
+            _blinking[id] = false;
+        }
     
         /// <summary>
         /// <para>Makes a blinking effect to the object</para>
@@ -169,5 +242,38 @@ namespace ProjectUtils.Helpers
             image.color = initialColor;
             _blinking[id] = false;
         }
+        
+        /// <summary>
+        /// <para>Makes a blinking effect to the object</para>
+        /// <param name="duration">The duration in seconds of the blinking effect</param>
+        /// <param name="ticks">The number of times you want the object to blink</param>
+        /// <param name="targetColor">The color to change in every blink, normally transparent or white</param>
+        /// </summary>
+        private static async Task DoBlinkAsync(this Image image, float duration, int ticks, Color targetColor)
+        {
+            if (ticks <= 0) return;
+        
+            _blinking ??= new Dictionary<int, bool>();
+            int id = image.GetHashCode();
+            if(!_blinking.ContainsKey(id)) _blinking.Add( id , true);
+            else _blinking[id] = true;
+
+            float timer = 0;
+            Color initialColor = image.color;  
+            int delay = (int)((duration/ticks/2)*1000);
+        
+            while (timer<duration)
+            {
+                image.color = targetColor;
+                await Task.Delay(delay);
+                image.color = initialColor;
+                await Task.Delay(delay);
+                timer += duration / ticks;
+            }
+
+            image.color = initialColor;
+            _blinking[id] = false;
+        }
+
     }
 }
