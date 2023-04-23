@@ -51,15 +51,15 @@ namespace ProjectUtils.Helpers
         public static void DoScale(this Transform transform, Vector3 targetScale, float time)  =>  CoroutineController.Start(DoScaleEnumerator(transform, targetScale, time));
         private static IEnumerator DoScaleEnumerator(Transform transform, Vector3 targetScale, float time)
         {
-            float timer = 0;
+            float timer = Time.deltaTime;
             Vector3 initialScale = transform.localScale;
             Vector3 scaleDelta = targetScale - initialScale;
 
             while (timer < time)
             {
                 transform.localScale = initialScale + scaleDelta * (timer/time);
-                timer += Time.deltaTime;
                 yield return null;
+                timer += Time.deltaTime;
             }
 
             transform.localScale = targetScale;
