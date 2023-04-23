@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ProjectUtils.TopDown2D;
+using Templates.TopDownMovement;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;

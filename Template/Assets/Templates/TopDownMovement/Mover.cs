@@ -1,7 +1,7 @@
-using ProjectUtils.Attacking;
+using Templates.Attacking;
 using UnityEngine;
 
-namespace ProjectUtils.TopDown2D
+namespace Templates.TopDownMovement
 {
     public abstract class Mover : Fighter
     {

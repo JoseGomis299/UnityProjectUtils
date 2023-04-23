@@ -1,7 +1,8 @@
-using ProjectUtils.Attacking;
-using ProjectUtils.Movement2D;
-using ProjectUtils.SavingSystem;
+using Templates.Attacking;
 using UnityEngine;
+
+namespace Templates.Movement2D
+{
     public class PlayerController2D : Mover
     {
         private Vector3 _direction;
@@ -35,8 +36,8 @@ using UnityEngine;
                     attackDirection.z = 0.0f;
                     attackDirection = (attackDirection-transform.position).normalized;
 
-                   // float attackAngle =Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
-                   // if (attackAngle<0) attackAngle += 360;
+                    // float attackAngle =Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+                    // if (attackAngle<0) attackAngle += 360;
           
                     //rangedAttack.Attack(shootPoint, _lastValidDirection, 2, 2, 10, 1, 0.5f, 10, Vector3.one, 0.1f);
                     //rangedAttack.CircularAttack(10, 1, 2, 1, 10, 1, 0.5f, 10, Vector3.one, 0);
@@ -70,4 +71,5 @@ using UnityEngine;
         }
         
     }
+}
 

@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
-using ProjectUtils.Attacking;
-using ProjectUtils.Movemet2D;
 using ProjectUtils.ObjectPooling;
+using Templates.Attacking;
 using UnityEngine;
 
-namespace ProjectUtils.Movement2D
+namespace Templates.Movement2D
 {
     public abstract class Mover : Fighter
     {

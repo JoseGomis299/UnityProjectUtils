@@ -1,5 +1,7 @@
-using ProjectUtils.TopDown2D;
 using UnityEngine;
+
+namespace Templates.TopDownMovement
+{
     public class PlayerController : Mover
     {
         private Vector3 _direction;
@@ -74,4 +76,5 @@ using UnityEngine;
         }
         
     }
+}
 

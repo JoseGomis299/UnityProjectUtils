@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
-using ProjectUtils.Attacking;
+using Templates.Attacking;
 using UnityEngine;
 
-namespace ProjectUtils.Movemet2D
+namespace Templates.Movement2D
 {
   public class Fighter : MonoBehaviour, IDamageable
   {

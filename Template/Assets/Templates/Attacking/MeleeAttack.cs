@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectUtils.Attacking
+namespace Templates.Attacking
 {
     public class MeleeAttack : MonoBehaviour
     {

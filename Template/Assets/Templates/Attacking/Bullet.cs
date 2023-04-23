@@ -2,7 +2,7 @@ using ProjectUtils.ObjectPooling;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace ProjectUtils.Attacking
+namespace Templates.Attacking
 {
     public class Bullet : MonoBehaviour
     {

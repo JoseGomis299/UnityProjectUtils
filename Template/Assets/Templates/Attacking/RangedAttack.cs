@@ -1,9 +1,8 @@
 using ProjectUtils.ObjectPooling;
-using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace ProjectUtils.Attacking
+namespace Templates.Attacking
 {
   public class RangedAttack : MonoBehaviour
   {
