@@ -3168,6 +3168,7 @@ GameObject:
   - component: {fileID: 1747620915}
   - component: {fileID: 1747620914}
   - component: {fileID: 1747620918}
+  - component: {fileID: 1747620919}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3218,7 +3219,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 8
+  m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 8cba9b4234e44a54ea8e5e4432769bac, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -3248,7 +3249,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1747620913}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.7, y: -1.7, z: 0.07461995}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3273,6 +3274,59 @@ MonoBehaviour:
   explosionDisplay: {fileID: 6199887265498087423, guid: 4d0b6295e51f68449b4a0aa1c291e6eb, type: 3}
   attackCoolDown: 1
   circularAttackCoolDown: 0
+--- !u!114 &1747620919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747620913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2060feccfbf70174dba752e7945550f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  transitions:
+  - animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    duration: 1
+    playOnStart: 0
+    keyFrames:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: 5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 180}
+      scale: {x: 2, y: 2, z: 2}
+      color: {r: 1, g: 1, b: 1, a: 0}
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1805531186
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,15 +3792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d93033dcae904e45a78125859422f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabsInitialPool:
-  - {fileID: 4951820278438212656, guid: 9ce4d08ba915497489f493607c9eb224, type: 3}
-  - {fileID: 6199887265498087423, guid: 4d0b6295e51f68449b4a0aa1c291e6eb, type: 3}
-  - {fileID: 2988060539176046819, guid: 80cf4b4b476112142a1975705285f528, type: 3}
-  prefabsInitialCount: 1e0000001e0000000a000000
-  objectsLifeSpan:
-  - 5
-  - 1.5
-  - 0.1
+  initialObjectPool: []
 --- !u!4 &2022837403
 Transform:
   m_ObjectHideFlags: 0
