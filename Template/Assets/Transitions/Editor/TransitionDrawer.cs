@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(Transitioner.Transition))]
+[CustomPropertyDrawer(typeof(Transition))]
 public class TransitionDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -12,21 +12,22 @@ public class TransitionDrawer : PropertyDrawer
 
         EditorGUI.PropertyField(position, property, label, true);
 
-        position.y += EditorGUI.GetPropertyHeight(property, true)+10;
+        position.y += EditorGUI.GetPropertyHeight(property, true);
         position.height = EditorGUIUtility.singleLineHeight;
 
-        SerializedProperty transitionProp = property.serializedObject.FindProperty(property.propertyPath);
+        var transitionProp = property.serializedObject.FindProperty(property.propertyPath);
         Transitioner transitioner = (Transitioner)property.serializedObject.targetObject;
         
         if (GUI.Button(position, "Add KeyFrame"))
         {
             if (transitionProp != null)
             {
-                Transitioner.Transition transition = new Transitioner.Transition();
+                Transition transition = new Transition();
                 transition.animationCurve = transitionProp.FindPropertyRelative("animationCurve").animationCurveValue;
                 transition.duration = transitionProp.FindPropertyRelative("duration").floatValue;
                 transition.playOnStart = transitionProp.FindPropertyRelative("playOnStart").boolValue;
                 transition.keyFrames = new List<Transitioner.KeyFrame>();
+                transition.id = transitionProp.FindPropertyRelative("id").intValue;
                 SerializedProperty keyFramesProp = transitionProp.FindPropertyRelative("keyFrames");
                 for (int i = 0; i < keyFramesProp.arraySize; i++)
                 {
@@ -46,16 +47,17 @@ public class TransitionDrawer : PropertyDrawer
             }
         }
         
-        position.y += EditorGUIUtility.singleLineHeight+10;
+        position.y += EditorGUIUtility.singleLineHeight;
 
         if (GUI.Button(position, "Play!"))
         {
             if (transitionProp != null)
             {
-                Transitioner.Transition transition = new Transitioner.Transition();
+                Transition transition = new Transition();
                 transition.animationCurve = transitionProp.FindPropertyRelative("animationCurve").animationCurveValue;
                 transition.duration = transitionProp.FindPropertyRelative("duration").floatValue;
                 transition.playOnStart = transitionProp.FindPropertyRelative("playOnStart").boolValue;
+                transition.id = transitionProp.FindPropertyRelative("id").intValue;
                 transition.keyFrames = new List<Transitioner.KeyFrame>();
                 SerializedProperty keyFramesProp = transitionProp.FindPropertyRelative("keyFrames");
                 for (int i = 0; i < keyFramesProp.arraySize; i++)
@@ -75,9 +77,6 @@ public class TransitionDrawer : PropertyDrawer
                 }
             }
         }
-        
-        
-       
         
         EditorGUI.EndProperty();
     }

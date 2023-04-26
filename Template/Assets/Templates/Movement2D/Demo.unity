@@ -3290,41 +3290,42 @@ MonoBehaviour:
   transitions:
   - animationCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
       m_RotationOrder: 0
-    duration: 1
+    duration: 0
     playOnStart: 0
+    id: 0
+    keyFrames: []
+  - animationCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+    duration: 0
+    playOnStart: 0
+    id: 954339111
     keyFrames:
     - position: {x: 0, y: 0, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
+      rotation: {x: -0, y: 0, z: 0}
       scale: {x: 1, y: 1, z: 1}
       color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 5, y: 0, z: 0}
-      rotation: {x: 0, y: 0, z: 180}
-      scale: {x: 2, y: 2, z: 2}
-      color: {r: 1, g: 1, b: 1, a: 0}
     - position: {x: 0, y: 0, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
+      rotation: {x: -0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0, y: 0, z: 0}
       scale: {x: 1, y: 1, z: 1}
       color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1805531186

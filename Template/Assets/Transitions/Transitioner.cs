@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [ExecuteAlways]
 public class Transitioner : MonoBehaviour
@@ -36,7 +37,6 @@ public class Transitioner : MonoBehaviour
             else if (image != null) color = image.color;
         }
         
-
         public static KeyFrame operator -(KeyFrame a)
         {
             return new KeyFrame
@@ -71,52 +71,31 @@ public class Transitioner : MonoBehaviour
         }
     }
     
-    [Serializable]
-    public struct Transition
-    {
-        [Header("Transition Parameters")]
-        public AnimationCurve animationCurve;
-        public float duration;
-        public bool playOnStart;
-        [Header("Transition Key Frames")]
-        public List<KeyFrame> keyFrames;
-        
-        public static bool operator ==(Transition a, Transition b)
-        {
-            if (a.keyFrames.Count != b.keyFrames.Count) return false;
-
-            bool listEquals = true;
-            for (int i = 0; i < a.keyFrames.Count; i++)
-            {
-                if (a.keyFrames[i] != b.keyFrames[i]) listEquals = false;
-            }
-
-            Debug.Log( a.animationCurve.Equals(b.animationCurve));
-            Debug.Log( a.duration == b.duration);
-            Debug.Log( a.playOnStart == b.playOnStart);
-            Debug.Log( listEquals);
-            return a.animationCurve.Equals(b.animationCurve) && a.duration == b.duration &&
-                   a.playOnStart == b.playOnStart && listEquals;
-
-        }
-
-        public static bool operator !=(Transition a, Transition b)
-        {
-            return !(a == b);
-        }
-    }
-    
     [Header("Transition List")]
-    [SerializeField] private List<Transition> transitions;
+    [SerializeField] private List<Transition> transitions = new();
     
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _image = GetComponent<Image>();
         if (_spriteRenderer == null) _spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+    }
+
+    private void OnEnable()
+    {
         transitions ??= new List<Transition>();
     }
-    
+
+    private void Update()
+    {
+        if(Application.IsPlaying(gameObject)) return;
+        System.Random random = new System.Random();
+        for (int i = 1; i < transitions.Count; i++)
+        {
+            if(transitions[i-1].id == transitions[i].id) {transitions[i].id = random.Next();}
+        }
+    }
+
     private async void Start()
     {
         if(!Application.IsPlaying(gameObject)) return;
