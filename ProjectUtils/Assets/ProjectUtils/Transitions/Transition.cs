@@ -20,7 +20,7 @@ namespace Transitions
         [HideInInspector] public int id;
 
         [Header("Transition Key Frames")]
-        public List<Transitioner.KeyFrame> keyFrames;
+        public List<KeyFrame> keyFrames;
 
         public static bool operator ==(Transition a, Transition b)
         {

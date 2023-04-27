@@ -1,79 +1,25 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using ProjectUtils.Helpers;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Transitions
 {
-    [ExecuteAlways]
-    public class Transitioner : MonoBehaviour
+    [ExecuteAlways, Icon("Assets/ProjectUtils/Transitions/Editor/Icons/TransitionPlayerIcon.png"), AddComponentMenu("Transitions/Transition Player")]
+    public class TransitionPlayer : MonoBehaviour
     {
         private enum TimeScale
         {
             Scaled,
             Unscaled
         }
-        [Header("Transitioner Parameters")]
+        [Header("TransitionPlayer Parameters")]
         [SerializeField] private TimeScale timeScale;
         private SpriteRenderer _spriteRenderer;
         private Image _image;
 
-        [Serializable]
-        public struct KeyFrame
-        { 
-            [Header("Key Frame Parameters")]
-            public Vector3 position;
-            public Vector3 rotation;
-            public Vector3 scale;
-            public Color color;
-
-            public void SetValues(Transform transform, SpriteRenderer spriteRenderer, Image image)
-            {
-                position = transform.position;
-                rotation = transform.eulerAngles;
-                scale = transform.localScale;
-
-                if (spriteRenderer != null) color = spriteRenderer.color;
-                else if (image != null) color = image.color;
-            }
-        
-            public static KeyFrame operator -(KeyFrame a)
-            {
-                return new KeyFrame
-                    { position = -a.position, rotation = -a.rotation, scale = -a.scale, color =  -1*a.color };
-            }
-
-            public static KeyFrame operator +(KeyFrame a, KeyFrame b)
-            {
-                return new KeyFrame
-                    { position = a.position+b.position, rotation = a.rotation+b.rotation, scale = a.scale+b.scale, color = a.color + b.color };  
-            }
-        
-            public static KeyFrame operator -(KeyFrame a, KeyFrame b)
-            {
-                return a + (-b);
-            }
-        
-            public static KeyFrame operator *(KeyFrame a, float b)
-            { 
-                return new KeyFrame
-                    { position = a.position*b, rotation = a.rotation*b, scale = a.scale*b, color = a.color*b};
-            }
-        
-            public static bool operator ==(KeyFrame a, KeyFrame b)
-            { 
-                return a.position == b.position && a.rotation == b.rotation && a.scale == b.scale && a.color == b.color;
-            }
-
-            public static bool operator !=(KeyFrame a, KeyFrame b)
-            {
-                return !(a == b);
-            }
-        }
-    
         [Header("Transition List")]
         [SerializeField] private List<Transition> transitions = new();
     
@@ -82,12 +28,19 @@ namespace Transitions
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _image = GetComponent<Image>();
             if (_spriteRenderer == null) _spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
-        }
-
-        private void OnEnable()
-        {
             transitions ??= new List<Transition>();
         }
+
+        private void Start()
+        {
+            if(!Application.IsPlaying(gameObject)) return;
+
+            foreach (var transition in transitions.Where(transition => transition.playOnStart))
+            {
+                PlayTransition(transition);
+            }
+        }
+
 
 #if UNITY_EDITOR
         private void Update()
@@ -99,28 +52,8 @@ namespace Transitions
                 if(transitions[i-1].id == transitions[i].id) {transitions[i].id = random.Next();}
             }
         }
-#endif
-    
-        private async void Start()
-        {
-            if(!Application.IsPlaying(gameObject)) return;
         
-            for (int i = 0; i < 10; i++)
-            {
-                await Task.Yield();
-            }
-            for (int i = 0; i < transitions.Count; i++)
-            {
-                if (transitions[i].playOnStart)
-                {
-                    PlayTransitionAsync(transitions[i]);
-                }
-            }
-        }
-
-#if UNITY_EDITOR
-    
-        public void AddKeyFrame(int index)
+        private void AddKeyFrame(int index)
         {
             KeyFrame keyFrame = new KeyFrame();
             keyFrame.SetValues(transform, _spriteRenderer, _image);
@@ -268,14 +201,14 @@ namespace Transitions
     
         private void PlayTransitionUnscaled(Transition transition)
         {
-            CoroutineController.Start(PlayTransitionUnscaledEnumerator(transition));
+            StartCoroutine(PlayTransitionUnscaledEnumerator(transition));
         }
         
         private IEnumerator PlayTransitionUnscaledEnumerator(Transition transition)
         {
             for (int i = 0; i < transition.keyFrames.Count-1; i++)
             {
-                yield return CoroutineController.Start(PlayTransitionUnscaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
+                yield return StartCoroutine(PlayTransitionUnscaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
             }
         }
     
@@ -296,14 +229,14 @@ namespace Transitions
     
         private void PlayTransitionScaled(Transition transition)
         {
-            CoroutineController.Start(PlayTransitionScaledEnumerator(transition));
+            StartCoroutine(PlayTransitionScaledEnumerator(transition));
         }
         
         private IEnumerator PlayTransitionScaledEnumerator(Transition transition)
         {
             for (int i = 0; i < transition.keyFrames.Count-1; i++)
             {
-                yield return CoroutineController.Start(PlayTransitionScaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
+                yield return StartCoroutine(PlayTransitionScaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
             }
         }
     

@@ -17,7 +17,7 @@ namespace Transitions.Editor
             position.height = EditorGUIUtility.singleLineHeight;
         
             var transitionProp = property.serializedObject.FindProperty(property.propertyPath);
-            Transitioner transitioner = (Transitioner)property.serializedObject.targetObject;
+            TransitionPlayer transitionPlayer = (TransitionPlayer)property.serializedObject.targetObject;
         
             if (GUI.Button(position, "Add KeyFrame"))
             {
@@ -27,13 +27,13 @@ namespace Transitions.Editor
                     transition.animationCurve = transitionProp.FindPropertyRelative("animationCurve").animationCurveValue;
                     transition.duration = transitionProp.FindPropertyRelative("duration").floatValue;
                     transition.playOnStart = transitionProp.FindPropertyRelative("playOnStart").boolValue;
-                    transition.keyFrames = new List<Transitioner.KeyFrame>();
+                    transition.keyFrames = new List<KeyFrame>();
                     transition.id = transitionProp.FindPropertyRelative("id").intValue;
                     SerializedProperty keyFramesProp = transitionProp.FindPropertyRelative("keyFrames");
                     for (int i = 0; i < keyFramesProp.arraySize; i++)
                     {
                         SerializedProperty keyFrameProp = keyFramesProp.GetArrayElementAtIndex(i);
-                        Transitioner.KeyFrame keyFrame = new Transitioner.KeyFrame();
+                        KeyFrame keyFrame = new KeyFrame();
                         keyFrame.position = keyFrameProp.FindPropertyRelative("position").vector3Value;
                         keyFrame.rotation = keyFrameProp.FindPropertyRelative("rotation").vector3Value;
                         keyFrame.scale = keyFrameProp.FindPropertyRelative("scale").vector3Value;
@@ -41,9 +41,9 @@ namespace Transitions.Editor
                         transition.keyFrames.Add(keyFrame);
                     }
 
-                    if (transitioner != null)
+                    if (transitionPlayer != null)
                     {
-                        transitioner.AddKeyFrame(transition);
+                        transitionPlayer.AddKeyFrame(transition);
                     }
                 }
             }
@@ -59,12 +59,12 @@ namespace Transitions.Editor
                     transition.duration = transitionProp.FindPropertyRelative("duration").floatValue;
                     transition.playOnStart = transitionProp.FindPropertyRelative("playOnStart").boolValue;
                     transition.id = transitionProp.FindPropertyRelative("id").intValue;
-                    transition.keyFrames = new List<Transitioner.KeyFrame>();
+                    transition.keyFrames = new List<KeyFrame>();
                     SerializedProperty keyFramesProp = transitionProp.FindPropertyRelative("keyFrames");
                     for (int i = 0; i < keyFramesProp.arraySize; i++)
                     {
                         SerializedProperty keyFrameProp = keyFramesProp.GetArrayElementAtIndex(i);
-                        Transitioner.KeyFrame keyFrame = new Transitioner.KeyFrame();
+                        KeyFrame keyFrame = new KeyFrame();
                         keyFrame.position = keyFrameProp.FindPropertyRelative("position").vector3Value;
                         keyFrame.rotation = keyFrameProp.FindPropertyRelative("rotation").vector3Value;
                         keyFrame.scale = keyFrameProp.FindPropertyRelative("scale").vector3Value;
@@ -72,9 +72,9 @@ namespace Transitions.Editor
                         transition.keyFrames.Add(keyFrame);
                     }
 
-                    if (transitioner != null)
+                    if (transitionPlayer != null)
                     {
-                        transitioner.PlayTransitionAsync(transition);
+                        transitionPlayer.PlayTransitionAsync(transition);
                     }
                 }
             }
