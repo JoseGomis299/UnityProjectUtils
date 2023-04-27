@@ -301,7 +301,7 @@ namespace ProjectUtils.Helpers
         public static void DoChangeColor(this SpriteRenderer spriteRenderer, Color targetColor, float duration) => CoroutineController.Start(DoChangeColorEnumerator(spriteRenderer, targetColor, duration));
         private static IEnumerator DoChangeColorEnumerator(SpriteRenderer spriteRenderer, Color targetColor, float duration)
         {
-            float timer = 0;
+            float timer = Time.unscaledDeltaTime;
             Color initialColor = spriteRenderer.color;
             Color colorDelta = targetColor - initialColor;
         
@@ -309,7 +309,7 @@ namespace ProjectUtils.Helpers
             {
                 spriteRenderer.color = initialColor + colorDelta*(timer/duration);
                 yield return null;
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
             }
 
             spriteRenderer.color = targetColor;
@@ -322,7 +322,7 @@ namespace ProjectUtils.Helpers
         /// </summary>
         public static async Task DoChangeColorAsync(this SpriteRenderer spriteRenderer, Color targetColor, float duration)
         {
-            float timer = 0;
+            float timer = Time.unscaledDeltaTime;
             Color initialColor = spriteRenderer.color;
             Color colorDelta = targetColor - initialColor;
         
@@ -330,7 +330,7 @@ namespace ProjectUtils.Helpers
             {
                 spriteRenderer.color = initialColor + colorDelta*(timer/duration);
                 await Task.Yield();
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
             }
 
             spriteRenderer.color = targetColor;
@@ -344,7 +344,7 @@ namespace ProjectUtils.Helpers
         public static void DoChangeColor(this Image image, Color targetColor , float duration) => CoroutineController.Start(DoChangeColorEnumerator(image, targetColor, duration));
         private static IEnumerator DoChangeColorEnumerator(Image image, Color targetColor, float duration)
         {
-            float timer = 0;
+            float timer = Time.unscaledDeltaTime;
             Color initialColor = image.color;
             Color colorDelta = targetColor - initialColor;
         
@@ -352,7 +352,7 @@ namespace ProjectUtils.Helpers
             {
                 image.color = initialColor + colorDelta*(timer/duration);
                 yield return null;
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
             }
 
             image.color = targetColor;
@@ -365,7 +365,7 @@ namespace ProjectUtils.Helpers
         /// </summary>
         public static async Task DoChangeColorAsync(this Image image, Color targetColor, float duration)
         {
-            float timer = 0;
+            float timer = Time.unscaledDeltaTime;
             Color initialColor = image.color;
             Color colorDelta = targetColor - initialColor;
         
@@ -373,7 +373,7 @@ namespace ProjectUtils.Helpers
             {
                 image.color = initialColor + colorDelta*(timer/duration);
                 await Task.Yield();
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
             }
 
             image.color = targetColor;
