@@ -47,6 +47,20 @@ namespace ProjectUtils.Helpers
             }
         }
 
+        /// <summary>Returns the angle between the current position and the mouse position</summary>
+        public static float GetAngleToPointer(this Transform transform)
+        {
+            Vector3 attackDirection = Input.mousePosition;
+            attackDirection = Camera.ScreenToWorldPoint(attackDirection);
+            attackDirection.z = 0.0f;
+            attackDirection = (attackDirection-transform.position).normalized;
+
+            float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+            while (angle<0) angle += 360;
+
+            return angle;
+        }
+
         /// <summary>
         /// <para>Scales the object to a target scale in a determined time</para>
         /// <param name="targetScale">The target scale</param>
