@@ -268,10 +268,7 @@ namespace Transitions
     
         private void PlayTransitionUnscaled(Transition transition)
         {
-            for (int i = 0; i < transition.keyFrames.Count-1; i++)
-            {
-                CoroutineController.Start(PlayTransitionUnscaledEnumerator(transition));
-            }
+            CoroutineController.Start(PlayTransitionUnscaledEnumerator(transition));
         }
         
         private IEnumerator PlayTransitionUnscaledEnumerator(Transition transition)
@@ -299,10 +296,7 @@ namespace Transitions
     
         private void PlayTransitionScaled(Transition transition)
         {
-            for (int i = 0; i < transition.keyFrames.Count-1; i++)
-            {
-                CoroutineController.Start(PlayTransitionScaledEnumerator(transition));
-            }
+            CoroutineController.Start(PlayTransitionScaledEnumerator(transition));
         }
         
         private IEnumerator PlayTransitionScaledEnumerator(Transition transition)
