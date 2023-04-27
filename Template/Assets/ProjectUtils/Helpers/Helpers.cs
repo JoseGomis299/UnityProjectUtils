@@ -47,13 +47,13 @@ namespace ProjectUtils.Helpers
             }
         }
 
-        /// <summary>Returns the angle between the current position and the mouse position</summary>
-        public static float GetAngleToPointer(this Transform transform)
+        /// <summary>Returns the angle in degrees between this position and the mouse position</summary>
+        public static float GetAngleToPointer(this Vector3 position)
         {
             Vector3 attackDirection = Input.mousePosition;
             attackDirection = Camera.ScreenToWorldPoint(attackDirection);
             attackDirection.z = 0.0f;
-            attackDirection = (attackDirection-transform.position).normalized;
+            attackDirection = (attackDirection-position).normalized;
 
             float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
             while (angle<0) angle += 360;
