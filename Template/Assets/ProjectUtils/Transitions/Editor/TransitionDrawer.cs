@@ -9,12 +9,12 @@ public class TransitionDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
-
+        
         EditorGUI.PropertyField(position, property, label, true);
 
         position.y += EditorGUI.GetPropertyHeight(property, true);
         position.height = EditorGUIUtility.singleLineHeight;
-
+        
         var transitionProp = property.serializedObject.FindProperty(property.propertyPath);
         Transitioner transitioner = (Transitioner)property.serializedObject.targetObject;
         
@@ -84,7 +84,7 @@ public class TransitionDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float height = EditorGUI.GetPropertyHeight(property, true) + EditorGUIUtility.singleLineHeight;
-        height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("keyFrames"), true);
+        height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("keyFrames"), false);
         return height;
     }
 }

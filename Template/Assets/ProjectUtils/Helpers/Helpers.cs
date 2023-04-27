@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace ProjectUtils.Helpers
 {
@@ -143,6 +146,15 @@ namespace ProjectUtils.Helpers
             if (!_blinking.ContainsKey(id)) _blinking.Add(id , false);
         
             return _blinking[id];
+        }
+        public static bool IsBlinking(this Image spriteRenderer)
+        {
+            _blinking ??= new Dictionary<int, bool>();
+        
+            int id = spriteRenderer.GetHashCode();
+            if (!_blinking.ContainsKey(id)) _blinking.Add(id , false);
+        
+            return _blinking[id];
         } 
     
         /// <summary>
@@ -264,6 +276,93 @@ namespace ProjectUtils.Helpers
             }
 
             image.color = initialColor;
+        }
+
+        
+        /// <summary>
+        /// <para>Makes the object transition from one color to another in a certain time</para>
+        /// <param name="targetColor">The final color</param>
+        /// <param name="duration">The duration in seconds of the transition</param>
+        /// </summary>
+        public static void DoChangeColor(this SpriteRenderer spriteRenderer, Color targetColor, float duration) => CoroutineController.Start(DoChangeColorEnumerator(spriteRenderer, targetColor, duration));
+        private static IEnumerator DoChangeColorEnumerator(SpriteRenderer spriteRenderer, Color targetColor, float duration)
+        {
+            float timer = 0;
+            Color initialColor = spriteRenderer.color;
+            Color colorDelta = targetColor - initialColor;
+        
+            while (timer<duration)
+            {
+                spriteRenderer.color = initialColor + colorDelta*(timer/duration);
+                yield return null;
+                timer += Time.deltaTime;
+            }
+
+            spriteRenderer.color = targetColor;
+        }
+        
+        /// <summary>
+        /// <para>Makes the object transition from one color to another in a certain time</para>
+        /// <param name="targetColor">The final color</param>
+        /// <param name="duration">The duration in seconds of the transition</param>
+        /// </summary>
+        public static async Task DoChangeColorAsync(this SpriteRenderer spriteRenderer, Color targetColor, float duration)
+        {
+            float timer = 0;
+            Color initialColor = spriteRenderer.color;
+            Color colorDelta = targetColor - initialColor;
+        
+            while (timer<duration)
+            {
+                spriteRenderer.color = initialColor + colorDelta*(timer/duration);
+                await Task.Yield();
+                timer += Time.deltaTime;
+            }
+
+            spriteRenderer.color = targetColor;
+        }
+    
+        /// <summary>
+        /// <para>Makes the object transition from one color to another in a certain time</para>
+        /// <param name="targetColor">The final color</param>
+        /// <param name="duration">The duration in seconds of the transition</param>
+        /// </summary>
+        public static void DoChangeColor(this Image image, Color targetColor , float duration) => CoroutineController.Start(DoChangeColorEnumerator(image, targetColor, duration));
+        private static IEnumerator DoChangeColorEnumerator(Image image, Color targetColor, float duration)
+        {
+            float timer = 0;
+            Color initialColor = image.color;
+            Color colorDelta = targetColor - initialColor;
+        
+            while (timer<duration)
+            {
+                image.color = initialColor + colorDelta*(timer/duration);
+                yield return null;
+                timer += Time.deltaTime;
+            }
+
+            image.color = targetColor;
+        }
+        
+        /// <summary>
+        /// <para>Makes the object transition from one color to another in a certain time</para>
+        /// <param name="targetColor">The final color</param>
+        /// <param name="duration">The duration in seconds of the transition</param>
+        /// </summary>
+        public static async Task DoChangeColorAsync(this Image image, Color targetColor, float duration)
+        {
+            float timer = 0;
+            Color initialColor = image.color;
+            Color colorDelta = targetColor - initialColor;
+        
+            while (timer<duration)
+            {
+                image.color = initialColor + colorDelta*(timer/duration);
+                await Task.Yield();
+                timer += Time.deltaTime;
+            }
+
+            image.color = targetColor;
         }
 
     }
