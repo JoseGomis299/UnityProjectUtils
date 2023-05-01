@@ -6,7 +6,22 @@ namespace Transitions
 {
     [Serializable]
     public struct KeyFrame
-    { 
+    {
+        public bool Equals(KeyFrame other)
+        {
+            return position.Equals(other.position) && rotation.Equals(other.rotation) && scale.Equals(other.scale) && color.Equals(other.color);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is KeyFrame other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(position, rotation, scale, color);
+        }
+
         [Header("Key Frame Parameters")]
         public Vector3 position;
         public Vector3 rotation;

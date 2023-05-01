@@ -7,6 +7,19 @@ namespace Transitions
     [Serializable]
     public class Transition 
     {
+        protected bool Equals(Transition other)
+        {
+            return Equals(animationCurve, other.animationCurve) && duration.Equals(other.duration) && playOnStart == other.playOnStart && id == other.id && Equals(keyFrames, other.keyFrames);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Transition)obj);
+        }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(animationCurve, duration, playOnStart, id, keyFrames);

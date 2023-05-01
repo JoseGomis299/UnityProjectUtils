@@ -20,8 +20,8 @@ namespace ProjectUtils.Helpers
             }
         }
 
-        public Coroutine Start ( IEnumerator routine ) => StartCoroutine( routine );
-        public Coroutine Start ( IEnumerator routine , string id )
+        public Coroutine StartC ( IEnumerator routine ) => StartCoroutine( routine );
+        public Coroutine StartC ( IEnumerator routine , string id )
         {
             var coroutine = StartCoroutine( routine );
             if( !_routines.ContainsKey(id) ) _routines.Add( id , routine );
