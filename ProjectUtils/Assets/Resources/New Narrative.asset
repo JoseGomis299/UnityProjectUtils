@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cdfea62cf7ce02499216069b6d45289, type: 3}
+  m_Name: New Narrative
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - BaseNodeGuid: bbc0bcec-8919-4840-b33b-4f337f7c2b2b
+    PortName: Next
+    TargetNodeGuid: e82905d4-70c6-479f-b9a7-2262f33b7be9
+  - BaseNodeGuid: 312e852f-4bf2-4955-b615-ee7db6b37c7a
+    PortName: Choice 1
+    TargetNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+  - BaseNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+    PortName: Choice 1
+    TargetNodeGuid: fb15371f-099c-4ee5-b4e0-afc0b7083123
+  - BaseNodeGuid: e82905d4-70c6-479f-b9a7-2262f33b7be9
+    PortName: Choice 1
+    TargetNodeGuid: 6be8d6a5-4f97-4bee-ac45-765bdf02698e
+  - BaseNodeGuid: 6be8d6a5-4f97-4bee-ac45-765bdf02698e
+    PortName: Choice 1
+    TargetNodeGuid: f95528fb-57d3-4021-a805-2822e71e02f8
+  - BaseNodeGuid: f95528fb-57d3-4021-a805-2822e71e02f8
+    PortName: aaaa
+    TargetNodeGuid: 312e852f-4bf2-4955-b615-ee7db6b37c7a
+  - BaseNodeGuid: f95528fb-57d3-4021-a805-2822e71e02f8
+    PortName: 'Hola '
+    TargetNodeGuid: c9387c56-de51-481d-b9fb-3585fdda79a4
+  - BaseNodeGuid: c9387c56-de51-481d-b9fb-3585fdda79a4
+    PortName: Choice 1
+    TargetNodeGuid: 75a6e027-9430-4836-9479-5cf347243d64
+  - BaseNodeGuid: 75a6e027-9430-4836-9479-5cf347243d64
+    PortName: .
+    TargetNodeGuid: fb15371f-099c-4ee5-b4e0-afc0b7083123
+  - BaseNodeGuid: 75a6e027-9430-4836-9479-5cf347243d64
+    PortName: adios
+    TargetNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+  DialogueNodeData:
+  - Guid: 312e852f-4bf2-4955-b615-ee7db6b37c7a
+    DialogueText: Buenas
+    Actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
+    Emotion: 8
+    SoundEffect: {fileID: 0}
+    Position: {x: 673.81134, y: 536.151}
+  - Guid: fb15371f-099c-4ee5-b4e0-afc0b7083123
+    DialogueText: .
+    Actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
+    Emotion: 4
+    SoundEffect: {fileID: 0}
+    Position: {x: 1251.6227, y: 116.83019}
+  - Guid: 345ffabc-f5dd-456c-a530-f950fb295555
+    DialogueText: adios
+    Actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
+    Emotion: 4
+    SoundEffect: {fileID: 0}
+    Position: {x: 922.868, y: 116.83019}
+  - Guid: e82905d4-70c6-479f-b9a7-2262f33b7be9
+    DialogueText: s
+    Actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
+    Emotion: 0
+    SoundEffect: {fileID: 0}
+    Position: {x: -48.90566, y: -148.52832}
+  - Guid: 6be8d6a5-4f97-4bee-ac45-765bdf02698e
+    DialogueText: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
+    Emotion: 4
+    SoundEffect: {fileID: 0}
+    Position: {x: 138.56606, y: -316.07547}
+  - Guid: f95528fb-57d3-4021-a805-2822e71e02f8
+    DialogueText: ...
+    Actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
+    Emotion: 0
+    SoundEffect: {fileID: 0}
+    Position: {x: 386.71698, y: -173.88681}
+  - Guid: c9387c56-de51-481d-b9fb-3585fdda79a4
+    DialogueText: hola
+    Actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
+    Emotion: 4
+    SoundEffect: {fileID: 0}
+    Position: {x: 419.32077, y: -535.2453}
+  - Guid: 75a6e027-9430-4836-9479-5cf347243d64
+    DialogueText: ...
+    Actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
+    Emotion: 0
+    SoundEffect: {fileID: 0}
+    Position: {x: 652.0755, y: -384}
+  ExposedProperties: []
