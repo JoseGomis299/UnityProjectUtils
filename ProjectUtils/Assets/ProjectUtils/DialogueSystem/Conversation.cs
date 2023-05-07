@@ -25,7 +25,7 @@ public class Conversation : ScriptableObject
         NextInteractionAsync();
     }
 
-    public async Task NextInteractionAsync()
+    public async void NextInteractionAsync()
     {
         if (_currentInteraction < 0) lastActor = null;
         else
@@ -33,16 +33,13 @@ public class Conversation : ScriptableObject
             lastActor = GetCurrentInteraction().actor;
             ConversationManager.instance.lastActor = lastActor;
         }
-
+        
         _currentInteraction++;
         if (ConversationManager.instance.optionsTransitionMode ==
             ConversationManager.OptionsTransitionMode.DoNotHideAutomatic && options.Count > 0)
         {
             if (_currentInteraction >= interactions.Count-1 )
             {
-                ConversationManager.instance.AddActorToCurrentConversation(interactions[_currentInteraction].actor);
-                ConversationManager.instance.NextSpriteAsync();
-        
                 if(interactions[_currentInteraction].soundEffect != null && AudioManager.Instance != null) AudioManager.Instance.PlaySound(interactions[_currentInteraction].soundEffect);
                 await ConversationManager.instance.WriteTextAsync(GetCurrentInteraction().text);
                 ConversationManager.instance.lastActor = GetCurrentInteraction().actor;
@@ -56,9 +53,6 @@ public class Conversation : ScriptableObject
             return;
         }
 
-        ConversationManager.instance.AddActorToCurrentConversation(interactions[_currentInteraction].actor);
-        ConversationManager.instance.NextSpriteAsync();
-        
         if(interactions[_currentInteraction].soundEffect != null && AudioManager.Instance != null) AudioManager.Instance.PlaySound(interactions[_currentInteraction].soundEffect);
         await ConversationManager.instance.WriteTextAsync(GetCurrentInteraction().text);
     }

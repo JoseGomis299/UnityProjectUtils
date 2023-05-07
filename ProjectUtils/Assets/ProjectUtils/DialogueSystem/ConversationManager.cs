@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectUtils.Helpers;
@@ -27,14 +28,15 @@ public class ConversationManager : MonoBehaviour
     [Header("Conversation Parameters")]
     [SerializeField] private int writingSpeed;
     [SerializeField] private SkippingType skippingType;
-    [field:SerializeReference] public OptionsTransitionMode optionsTransitionMode { get; private set; }
+
+    [field: SerializeReference]
+    public OptionsTransitionMode optionsTransitionMode { get; private set; } = OptionsTransitionMode.DoNotHide;
     [HideInInspector] public Actor lastActor;
     
     //Events
     public Action<Conversation> onConversationFinished; 
-    public event Action<ConversationOption> onOptionSelected; 
-
-    public Conversation testConversation;
+    public event Action<ConversationOption> onOptionSelected;
+    public event Action onEndMainConversation;
     private enum SkippingType
     {
         IncreaseWritingSpeed, SkipText
@@ -47,7 +49,7 @@ public class ConversationManager : MonoBehaviour
     private Task _writeText;
     private bool _skipWriting;
     private Dictionary<Actor, Image> _actorImages;
-    private Dictionary<Image, TransitionPlayer> _imagesTransitions;
+    private Dictionary<Actor, TransitionPlayer> _imagesTransitions;
     private List<Actor> _actors;
     private Conversation _currentConversation;
     private int _writingSpeed;
@@ -64,7 +66,6 @@ public class ConversationManager : MonoBehaviour
         
         optionSelector.SetActive(false);
         conversationLayout.SetActive(false);
-        StartConversation(testConversation);
     }
     
     public async void StartConversation(Conversation conversation)
@@ -85,8 +86,8 @@ public class ConversationManager : MonoBehaviour
 
         _actors = new List<Actor>();
         _actorImages = new Dictionary<Actor, Image>();
-        _imagesTransitions = new Dictionary<Image, TransitionPlayer>();
-        AddActorToCurrentConversation(_currentConversation.GetCurrentInteraction().actor);
+        _imagesTransitions = new Dictionary<Actor, TransitionPlayer>();
+        lastActor = null;
         
         _currentConversation.StartConversation();
     }
@@ -98,8 +99,6 @@ public class ConversationManager : MonoBehaviour
             var image = actorsImages[i];
             image.gameObject.SetActive(false);
         }
-        
-        actorsImages[0].gameObject.SetActive(true);
     }
     
     private void Update()
@@ -122,7 +121,8 @@ public class ConversationManager : MonoBehaviour
             if (_writeText == null) return;
             if (_writeText.IsCompleted)
             {
-                _currentConversation.NextInteractionAsync();
+                _writeText = null;
+                 _currentConversation.NextInteractionAsync();
                 return;
             }
             
@@ -141,7 +141,8 @@ public class ConversationManager : MonoBehaviour
             if (_writeText == null) return;
             if (_writeText.IsCompleted)
             {
-                _currentConversation.NextInteractionAsync();
+                _writeText = null;
+                 _currentConversation.NextInteractionAsync();
                 return;
             }
             
@@ -152,6 +153,7 @@ public class ConversationManager : MonoBehaviour
 
     public async Task WriteTextAsync(string text)
     {
+        await NextSpriteAsync();
         _writeText = _WriteTextAsync(text);
         await Task.WhenAll(_writeText);
     }
@@ -191,24 +193,37 @@ public class ConversationManager : MonoBehaviour
         await Task.WhenAll(tasks);
         await boxTransitions.PlayTransitionAsync(1);
         conversationLayout.SetActive(false);
+        onEndMainConversation?.Invoke();
     }
 
     public async Task NextSpriteAsync()
     {
         Interaction currentInteraction = _currentConversation.GetCurrentInteraction();
-        if (lastActor != null && !lastActor.Equals(currentInteraction.actor))
+        bool isNew = AddActorToCurrentConversation(currentInteraction.actor) || !IsOnStage(currentInteraction.actor);
+
+        if (lastActor != null && !currentInteraction.actor.Equals(lastActor))
         {
-            if(!_fromOptions) GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
+            if (!IsOnStage(currentInteraction.actor) && actorsImages.All(x => x.gameObject.activeInHierarchy))
+            {
+                if(_imagesTransitions[lastActor].Equals(_imagesTransitions[currentInteraction.actor]))
+                    await GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
+                else GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
+                await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(3);
+            }
+            else if(!_fromOptions) GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
         }
         SetActorsImageSprite(currentInteraction.actor, currentInteraction.actorSprite);
-        
-        if(!_actorImages[currentInteraction.actor].gameObject.activeInHierarchy || !HasActed(currentInteraction.actor)) 
-        { 
+
+        if(isNew || !_actorImages[currentInteraction.actor].gameObject.activeInHierarchy) 
+        {
             _actorImages[currentInteraction.actor].gameObject.SetActive(true);
             await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(0);
         }
-        
-        if(lastActor != null && !lastActor.Equals(currentInteraction.actor)) await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(1);
+
+        if ((lastActor != null && !currentInteraction.actor.Equals(lastActor)) || isNew)
+        {
+            await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(1);
+        }
         _fromOptions = false;
     }
 
@@ -263,20 +278,33 @@ public class ConversationManager : MonoBehaviour
         return false;
     }
 
-    public void AddActorToCurrentConversation(Actor actor)
+    public bool AddActorToCurrentConversation(Actor actor)
     {
-        if(HasActed(actor)) return;
+        if(HasActed(actor)) return false;
 
         int index = _actors.Count % actorsImages.Length;
 
-        Debug.Log(index);
         _actors.Add(actor);
         _actorImages.Add(actor, actorsImages[index]);
-        _imagesTransitions.Add(actorsImages[index], imageTransitionPlayers[index]);
+        _imagesTransitions.Add(actor, imageTransitionPlayers[index]);
+        return true;
     }
 
     private TransitionPlayer GetActorsImageTransition(Actor actor)
     {
-        return _imagesTransitions[_actorImages[actor]];
+        return _imagesTransitions[actor];
+    }
+
+    private bool IsOnStage(Actor actor)
+    {
+        foreach (var actorsImage in actorsImages)
+        {
+            foreach (var emotion in actor.GetEmotionsNames())
+            {
+                if (actorsImage.sprite.Equals(actor.GetEmotionSprite(emotion))) return true;
+            }
+        }
+
+        return false;
     }
 }

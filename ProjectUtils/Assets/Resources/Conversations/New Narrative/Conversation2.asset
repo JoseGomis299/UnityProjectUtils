@@ -14,13 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactions:
   - actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
-    text: hola
+    text: asdasda
     actorSprite: {fileID: 21300000, guid: f09eae8c0ea04254b90c5386a034a225, type: 3}
-    soundEffect: {fileID: 8300000, guid: f24771df835c8084ab009ead03259bcf, type: 3}
-  - actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
-    text: ...
-    actorSprite: {fileID: -430173914, guid: c1d7e286e80d4fe488e1b5f0ce8c7436, type: 3}
-    soundEffect: {fileID: 8300000, guid: f24771df835c8084ab009ead03259bcf, type: 3}
-  options:
-  - {fileID: 11400000, guid: f35e80bf2ccfe9249a49840e0ecc0ae3, type: 2}
-  - {fileID: 11400000, guid: 436fae58f0657d74e8fbc4f871de10c1, type: 2}
+    soundEffect: {fileID: 0}
+  options: []

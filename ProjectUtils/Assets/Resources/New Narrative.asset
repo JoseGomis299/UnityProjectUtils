@@ -16,12 +16,6 @@ MonoBehaviour:
   - BaseNodeGuid: bbc0bcec-8919-4840-b33b-4f337f7c2b2b
     PortName: Next
     TargetNodeGuid: e82905d4-70c6-479f-b9a7-2262f33b7be9
-  - BaseNodeGuid: 312e852f-4bf2-4955-b615-ee7db6b37c7a
-    PortName: Choice 1
-    TargetNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
-  - BaseNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
-    PortName: Choice 1
-    TargetNodeGuid: fb15371f-099c-4ee5-b4e0-afc0b7083123
   - BaseNodeGuid: e82905d4-70c6-479f-b9a7-2262f33b7be9
     PortName: Choice 1
     TargetNodeGuid: 6be8d6a5-4f97-4bee-ac45-765bdf02698e
@@ -43,6 +37,30 @@ MonoBehaviour:
   - BaseNodeGuid: 75a6e027-9430-4836-9479-5cf347243d64
     PortName: adios
     TargetNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+  - BaseNodeGuid: 312e852f-4bf2-4955-b615-ee7db6b37c7a
+    PortName: Choice 1
+    TargetNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+  - BaseNodeGuid: 345ffabc-f5dd-456c-a530-f950fb295555
+    PortName: Choice 1
+    TargetNodeGuid: fb15371f-099c-4ee5-b4e0-afc0b7083123
+  - BaseNodeGuid: fb15371f-099c-4ee5-b4e0-afc0b7083123
+    PortName: Choice 1
+    TargetNodeGuid: e0b86291-8f43-43e1-bb2c-d81b193add03
+  - BaseNodeGuid: e0b86291-8f43-43e1-bb2c-d81b193add03
+    PortName: Choice 1
+    TargetNodeGuid: 28af4a44-fc06-4e4c-8ecd-a72f8efbd2b4
+  - BaseNodeGuid: 28af4a44-fc06-4e4c-8ecd-a72f8efbd2b4
+    PortName: Choice 1
+    TargetNodeGuid: 74035f7c-28ba-458b-86a3-f3d00e211932
+  - BaseNodeGuid: 74035f7c-28ba-458b-86a3-f3d00e211932
+    PortName: Choice 1
+    TargetNodeGuid: 78256068-2592-4e57-aa13-27e924a9ac56
+  - BaseNodeGuid: 78256068-2592-4e57-aa13-27e924a9ac56
+    PortName: Choice 1
+    TargetNodeGuid: 1838895b-2c50-4c2b-8ce7-68fb82aea5e2
+  - BaseNodeGuid: 78256068-2592-4e57-aa13-27e924a9ac56
+    PortName: Choice 2
+    TargetNodeGuid: 0224bd4f-8d72-4059-95e0-a65b296f929b
   DialogueNodeData:
   - Guid: e82905d4-70c6-479f-b9a7-2262f33b7be9
     DialogueText: s
@@ -92,4 +110,40 @@ MonoBehaviour:
     Emotion: 4
     SoundEffect: {fileID: 8300000, guid: f24771df835c8084ab009ead03259bcf, type: 3}
     Position: {x: 1251.6227, y: 116.83019}
+  - Guid: e0b86291-8f43-43e1-bb2c-d81b193add03
+    DialogueText: aaa
+    Actor: {fileID: 11400000, guid: 2ebbeb6bcccf04540b69687767b9e4ab, type: 2}
+    Emotion: 1
+    SoundEffect: {fileID: 0}
+    Position: {x: 1603.9246, y: 126.79246}
+  - Guid: 28af4a44-fc06-4e4c-8ecd-a72f8efbd2b4
+    DialogueText: asdfd
+    Actor: {fileID: 11400000, guid: 133343dbd62b9bd4ca8e0e3d8e0c7382, type: 2}
+    Emotion: 1
+    SoundEffect: {fileID: 0}
+    Position: {x: 1901.8868, y: 176.60378}
+  - Guid: 74035f7c-28ba-458b-86a3-f3d00e211932
+    DialogueText: eeeee
+    Actor: {fileID: 11400000, guid: 133343dbd62b9bd4ca8e0e3d8e0c7382, type: 2}
+    Emotion: 1
+    SoundEffect: {fileID: 0}
+    Position: {x: 2202.566, y: 277.13208}
+  - Guid: 78256068-2592-4e57-aa13-27e924a9ac56
+    DialogueText: jeje
+    Actor: {fileID: 11400000, guid: 0a4095705f844be4bae85d361d7fd500, type: 2}
+    Emotion: 1
+    SoundEffect: {fileID: 0}
+    Position: {x: 2468.83, y: 126.79246}
+  - Guid: 0224bd4f-8d72-4059-95e0-a65b296f929b
+    DialogueText: ...
+    Actor: {fileID: 11400000, guid: 2ebbeb6bcccf04540b69687767b9e4ab, type: 2}
+    Emotion: 1
+    SoundEffect: {fileID: 0}
+    Position: {x: 2752.302, y: 359.54718}
+  - Guid: 1838895b-2c50-4c2b-8ce7-68fb82aea5e2
+    DialogueText: asdasda
+    Actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
+    Emotion: 4
+    SoundEffect: {fileID: 0}
+    Position: {x: 2808.453, y: 59.77359}
   ExposedProperties: []
