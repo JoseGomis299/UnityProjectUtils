@@ -29,8 +29,12 @@ public class ConversationManager : MonoBehaviour
     [SerializeField] private SkippingType skippingType;
     [field:SerializeReference] public OptionsTransitionMode optionsTransitionMode { get; private set; }
     [HideInInspector] public Actor lastActor;
+    
+    //Events
+    public Action<Conversation> onConversationFinished; 
+    public event Action<ConversationOption> onOptionSelected; 
 
-    public Conversation c;
+    public Conversation testConversation;
     private enum SkippingType
     {
         IncreaseWritingSpeed, SkipText
@@ -41,9 +45,9 @@ public class ConversationManager : MonoBehaviour
     }
 
     private Task _writeText;
+    private bool _skipWriting;
     private Dictionary<Actor, Image> _actorImages;
     private Dictionary<Image, TransitionPlayer> _imagesTransitions;
-    private bool _skipWriting;
     private List<Actor> _actors;
     private Conversation _currentConversation;
     private int _writingSpeed;
@@ -60,7 +64,7 @@ public class ConversationManager : MonoBehaviour
         
         optionSelector.SetActive(false);
         conversationLayout.SetActive(false);
-        StartConversation(c);
+        StartConversation(testConversation);
     }
     
     public async void StartConversation(Conversation conversation)
@@ -232,6 +236,7 @@ public class ConversationManager : MonoBehaviour
                }
 
                _currentConversation.StartConversation();
+               onOptionSelected?.Invoke(option);
                HideOptions();
            });
         }

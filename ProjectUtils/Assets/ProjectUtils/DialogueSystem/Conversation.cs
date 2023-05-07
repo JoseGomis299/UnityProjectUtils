@@ -65,6 +65,7 @@ public class Conversation : ScriptableObject
 
     public void EndConversation()
     {
+        ConversationManager.instance.onConversationFinished?.Invoke(this);
         if(options.Count > 0) ConversationManager.instance.ShowOptions();
         else
         {
