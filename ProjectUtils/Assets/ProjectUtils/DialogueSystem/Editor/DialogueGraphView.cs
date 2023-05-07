@@ -16,7 +16,7 @@ public class DialogueGraphView : GraphView
     public Blackboard blackboard;
 
     private NodeSearchWindow _nodeSearchWindow;
-    private EditorWindow _window;
+    private Vector2 mousePosition;
     
     public DialogueGraphView(EditorWindow editorWindow)
     {
@@ -33,7 +33,6 @@ public class DialogueGraphView : GraphView
         
         AddElement(GenerateEntryPointNode());
         AddSearchWindow(editorWindow);
-        _window = editorWindow;
         
         serializeGraphElements += CutCopyOperation;
         unserializeAndPaste += PasteOperation;
@@ -44,11 +43,9 @@ public class DialogueGraphView : GraphView
         // Deserialize the JSON data from the clipboard
         var copyData = JsonUtility.FromJson<CopyPasteData>(data);
 
-        // Calculate the offset for the pasted nodes
-        Vector2 pasteOffset = new Vector2(100, 100);
-
         // Create new nodes based on the serialized data
         List<DialogueNode> pastedNodes = new List<DialogueNode>();
+        Vector2 positionSum = Vector2.zero;
         foreach (var nodeData in copyData.nodes)
         {
             var pastedNode = CreateDialogueNode(new DialogueNodeData()
@@ -59,16 +56,21 @@ public class DialogueGraphView : GraphView
                 Guid = GUID.Generate().ToString(),
                 Position = nodeData.Position,
                 SoundEffect = nodeData.SoundEffect
-            }, nodeData.Position + pasteOffset);
+            }, nodeData.Position);
             
+            positionSum += nodeData.Position;
             pastedNodes.Add(pastedNode);
             AddElement(pastedNode);
         }
+        
+        positionSum /= copyData.nodes.Count;
 
         // Select the pasted nodes
         ClearSelection();
-        foreach (var pastedNode in pastedNodes)
+        for (var i = 0; i < pastedNodes.Count; i++)
         {
+            var pastedNode = pastedNodes[i];
+            pastedNode.SetPosition(new Rect(mousePosition+copyData.nodes[i].Position-positionSum, defaultNodeSize));
             AddToSelection(pastedNode);
         }
     }
@@ -107,6 +109,18 @@ public class DialogueGraphView : GraphView
         return jsonData;
     }
 
+    public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+    {
+        base.BuildContextualMenu(evt);
+        VisualElement contentViewContainer = ElementAt(1);
+        Vector3 screenMousePosition = evt.localMousePosition;
+        Vector2 worldMousePosition = screenMousePosition - contentViewContainer.transform.position;
+        worldMousePosition *= 1 / contentViewContainer.transform.scale.x;
+        mousePosition = worldMousePosition;
+    }
+
+    
+    
     private void AddSearchWindow(EditorWindow editorWindow)
     {
         _nodeSearchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
