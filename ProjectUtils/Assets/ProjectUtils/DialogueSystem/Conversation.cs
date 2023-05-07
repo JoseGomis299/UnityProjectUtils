@@ -20,8 +20,7 @@ public class Conversation : ScriptableObject
 
     public void StartConversation()
     {
-        if(interactions[0].soundEffect != null && AudioManager.Instance != null) AudioManager.Instance.PlaySound(interactions[0].soundEffect);
-        InitializeValues();
+        interactions ??= new List<Interaction>();
         _currentInteraction = -1;
         NextInteractionAsync();
     }

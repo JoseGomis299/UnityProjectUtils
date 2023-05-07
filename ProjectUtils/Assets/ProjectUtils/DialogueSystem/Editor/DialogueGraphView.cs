@@ -179,6 +179,7 @@ public class DialogueGraphView : GraphView
         button.text = "New Choice";
         dialogueNode.titleContainer.Add(button);
 
+        styleSheets.Add(Resources.Load<StyleSheet>("Node"));
         AddEditableFields(dialogueNode);
 
         dialogueNode.RefreshExpandedState();
@@ -191,7 +192,6 @@ public class DialogueGraphView : GraphView
     private void AddEditableFields(DialogueNode dialogueNode)
     {
         var textField = new TextField(String.Empty);
-        textField.multiline = true;
         textField.RegisterValueChangedCallback(evt =>
         {
             dialogueNode.DialogueText = evt.newValue.Trim();

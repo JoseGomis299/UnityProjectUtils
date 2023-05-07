@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25464996c6e43e42b89f36bd5d6e6f1, type: 3}
   m_Name: Actor
   m_EditorClassIdentifier: 
-  name: Juanito
-  voice: {fileID: 0}
+  name: Michael
+  voice: {fileID: 8300000, guid: f24771df835c8084ab009ead03259bcf, type: 3}
   emotions:
   - emotion: 1
     sprite: {fileID: 2118537342, guid: c1d7e286e80d4fe488e1b5f0ce8c7436, type: 3}

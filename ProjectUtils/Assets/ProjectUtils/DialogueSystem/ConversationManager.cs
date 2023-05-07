@@ -30,6 +30,7 @@ public class ConversationManager : MonoBehaviour
     [field:SerializeReference] public OptionsTransitionMode optionsTransitionMode { get; private set; }
     [HideInInspector] public Actor lastActor;
 
+    public Conversation c;
     private enum SkippingType
     {
         IncreaseWritingSpeed, SkipText
@@ -59,6 +60,7 @@ public class ConversationManager : MonoBehaviour
         
         optionSelector.SetActive(false);
         conversationLayout.SetActive(false);
+        StartConversation(c);
     }
     
     public async void StartConversation(Conversation conversation)
@@ -166,7 +168,7 @@ public class ConversationManager : MonoBehaviour
             
             stringBuilder.Append(character);
             conversationText.text = stringBuilder.ToString();
-            if(AudioManager.Instance != null) AudioManager.Instance.PlaySound(_currentConversation.GetCurrentInteraction().actor.voice);
+            if(AudioManager.Instance != null && _currentConversation.GetCurrentInteraction().actor.voice!= null) AudioManager.Instance.PlaySound(_currentConversation.GetCurrentInteraction().actor.voice);
             await Task.Delay(1000/_writingSpeed);
         }
         conversationText.text = text;
@@ -261,7 +263,8 @@ public class ConversationManager : MonoBehaviour
         if(HasActed(actor)) return;
 
         int index = _actors.Count % actorsImages.Length;
-        
+
+        Debug.Log(index);
         _actors.Add(actor);
         _actorImages.Add(actor, actorsImages[index]);
         _imagesTransitions.Add(actorsImages[index], imageTransitionPlayers[index]);

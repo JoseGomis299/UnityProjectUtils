@@ -7,8 +7,6 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource effectSource;
-
-    private float _previousVolume;
     
     void Awake()
     {
@@ -21,7 +19,7 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
     public void PlaySound(AudioClip clip)
-    {
+    { 
         effectSource.PlayOneShot(clip);
     }
 

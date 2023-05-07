@@ -16,5 +16,5 @@ MonoBehaviour:
   - actor: {fileID: 11400000, guid: 5b896e234f81c7d4db3533480d055016, type: 2}
     text: .
     actorSprite: {fileID: 21300000, guid: f09eae8c0ea04254b90c5386a034a225, type: 3}
-    soundEffect: {fileID: 0}
+    soundEffect: {fileID: 8300000, guid: f24771df835c8084ab009ead03259bcf, type: 3}
   options: []

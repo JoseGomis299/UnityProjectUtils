@@ -1,3 +1,5 @@
-DialogueNode #mainContainer{
-    background-color: rgb(128, 128, 128);
-} 
+DialogueNode #node-border{
+    max-width: 400px;
+    background-color: rgb(40,40,40);
+}
+
