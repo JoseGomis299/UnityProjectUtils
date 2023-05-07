@@ -1,15 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-[Serializable]
-public struct Interaction
+namespace ProjectUtils.DialogueSystem
 {
-    [Header("Parameters")]
-    public Actor actor;
-    [Multiline] public string text;
-    public Sprite actorSprite;
-    public AudioClip soundEffect;
+    [Serializable]
+    public struct Interaction
+    {
+        [Header("Parameters")]
+        public Actor actor;
+        [Multiline] public string text;
+        public Sprite actorSprite;
+        public AudioClip soundEffect;
+    }
 }
