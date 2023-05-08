@@ -13,7 +13,8 @@ namespace Transitions
         private enum TimeScale
         {
             Scaled,
-            Unscaled
+            Unscaled,
+            Fixed
         }
         [Header("TransitionPlayer Parameters")]
         [SerializeField] private TimeScale timeScale;
@@ -51,6 +52,17 @@ namespace Transitions
             {
                 if(transitions[i-1].id == transitions[i].id) {transitions[i].id = random.Next();}
             }
+        }
+
+        private float GetTime(TimeScale scale)
+        {
+            switch (scale)
+            {
+                case TimeScale.Scaled : return Time.deltaTime;
+                case TimeScale.Unscaled : return Time.unscaledDeltaTime;
+            }
+
+            return Time.fixedDeltaTime;
         }
         
         private void AddKeyFrame(int index)
@@ -96,19 +108,11 @@ namespace Transitions
 #if UNITY_EDITOR
             if (!Application.IsPlaying(gameObject))
             {
-                await PlayTransitionFixedAsync(transition);
+                await PlayTransitionAsync(transition, TimeScale.Fixed);
                 return;
             }
 #endif
-            switch (timeScale)
-            {
-                case TimeScale.Scaled: 
-                    await PlayTransitionScaledAsync(transition);
-                    break;
-                case TimeScale.Unscaled:
-                    await PlayTransitionUnscaledAsync(transition);
-                    break;
-            }
+            await PlayTransitionAsync(transition, timeScale);
         }
    
         public void PlayTransition(int index)
@@ -118,138 +122,50 @@ namespace Transitions
     
         public void PlayTransition(Transition transition)
         {
-            switch (timeScale)
-            {
-                case TimeScale.Scaled: 
-                    PlayTransitionScaled(transition);
-                    break;
-                case TimeScale.Unscaled:
-                    PlayTransitionUnscaled(transition);
-                    break;
-            }
+            StartCoroutine(PlayTransitionCoroutine(transition));
         }
 
-        private async Task PlayTransitionUnscaledAsync(Transition transition)
+        private async Task PlayTransitionAsync(Transition transition, TimeScale scale)
         {
             for (int i = 0; i < transition.keyFrames.Count-1; i++)
             {
-                await PlayTransitionUnscaledAsync(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration);
+                await PlayTransitionAsync(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration, scale);
             }
         }
     
-        private async Task PlayTransitionUnscaledAsync(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
+        private async Task PlayTransitionAsync(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration, TimeScale scale)
         {
-            float timer = Time.unscaledDeltaTime;
+            float timer = GetTime(scale);
             KeyFrame scaleDelta = targetFrame - initialFrame;
 
             while (timer < duration)
             {
                 SetTransformToFrame(initialFrame + scaleDelta * (animationCurve.Evaluate(timer/duration)));
                 await Task.Yield();
-                timer += Time.unscaledDeltaTime;
+                timer += GetTime(scale);
             }
 
             SetTransformToFrame(initialFrame + scaleDelta);
         } 
-    
-        private async Task PlayTransitionScaledAsync(Transition transition)
-        {
-            for (int i = 0; i < transition.keyFrames.Count-1; i++)
-            {
-                await PlayTransitionScaledAsync(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration/(transition.keyFrames.Count-1));
-            }
-        }
-    
-        private async Task PlayTransitionScaledAsync(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
-        {
-            float timer = Time.deltaTime;
-            KeyFrame scaleDelta = targetFrame - initialFrame;
-
-            while (timer < duration)
-            {
-                SetTransformToFrame(initialFrame + scaleDelta * (animationCurve.Evaluate(timer/duration)));
-                await Task.Yield();
-                timer += Time.deltaTime;
-            }
-
-            SetTransformToFrame(initialFrame + scaleDelta);
-        } 
-    
-        private async Task PlayTransitionFixedAsync(Transition transition)
-        {
-            for (int i = 0; i < transition.keyFrames.Count-1; i++)
-            {
-                await PlayTransitionFixedAsync(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration);
-            }
-        }
-    
-        private async Task PlayTransitionFixedAsync(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
-        {
-            float timer = Time.fixedDeltaTime;
-            KeyFrame scaleDelta = targetFrame - initialFrame;
         
-
-            while (timer < duration)
-            {
-                SetTransformToFrame(initialFrame + scaleDelta * (animationCurve.Evaluate(timer/duration)));
-                await Task.Yield();
-                timer += Time.fixedDeltaTime;
-            }
-
-            SetTransformToFrame(initialFrame + scaleDelta);
-        }
-    
-        private void PlayTransitionUnscaled(Transition transition)
-        {
-            StartCoroutine(PlayTransitionUnscaledEnumerator(transition));
-        }
-        
-        private IEnumerator PlayTransitionUnscaledEnumerator(Transition transition)
+        private IEnumerator PlayTransitionCoroutine(Transition transition)
         {
             for (int i = 0; i < transition.keyFrames.Count-1; i++)
             {
-                yield return StartCoroutine(PlayTransitionUnscaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
+                yield return StartCoroutine(PlayTransitionCoroutine(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
             }
         }
     
-        private IEnumerator PlayTransitionUnscaled(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
+        private IEnumerator PlayTransitionCoroutine(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
         {
-            float timer = Time.unscaledDeltaTime;
+            float timer = GetTime(timeScale);
             KeyFrame scaleDelta = targetFrame - initialFrame;
 
             while (timer < duration)
             {
                 SetTransformToFrame(initialFrame + scaleDelta * (animationCurve.Evaluate(timer/duration)));
                 yield return null;
-                timer += Time.unscaledDeltaTime;
-            }
-
-            SetTransformToFrame(initialFrame + scaleDelta);
-        } 
-    
-        private void PlayTransitionScaled(Transition transition)
-        {
-            StartCoroutine(PlayTransitionScaledEnumerator(transition));
-        }
-        
-        private IEnumerator PlayTransitionScaledEnumerator(Transition transition)
-        {
-            for (int i = 0; i < transition.keyFrames.Count-1; i++)
-            {
-                yield return StartCoroutine(PlayTransitionScaled(transition.keyFrames[i], transition.keyFrames[i+1], transition.animationCurve, transition.duration));
-            }
-        }
-    
-        private IEnumerator PlayTransitionScaled(KeyFrame initialFrame, KeyFrame targetFrame, AnimationCurve animationCurve, float duration)
-        {
-            float timer = Time.deltaTime;
-            KeyFrame scaleDelta = targetFrame - initialFrame;
-
-            while (timer < duration)
-            {
-                SetTransformToFrame(initialFrame + scaleDelta * (animationCurve.Evaluate(timer/duration)));
-                yield return null;
-                timer += Time.deltaTime;
+                timer +=  GetTime(timeScale);
             }
 
             SetTransformToFrame(initialFrame + scaleDelta);

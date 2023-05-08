@@ -184,7 +184,7 @@ namespace ProjectUtils.DialogueSystem
                 stringBuilder.Append(character);
                 conversationText.text = stringBuilder.ToString();
                 if(AudioManager.Instance != null && _currentConversation.GetCurrentInteraction().actor.voice!= null) AudioManager.Instance.PlaySound(_currentConversation.GetCurrentInteraction().actor.voice);
-                await Task.Delay(1000/_writingSpeed);
+                await UnityDelay.Delay(1000/_writingSpeed);
             }
             conversationText.text = text;
         }

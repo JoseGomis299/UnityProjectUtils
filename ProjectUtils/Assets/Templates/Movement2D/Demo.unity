@@ -975,7 +975,8 @@ MonoBehaviour:
   conversationText: {fileID: 6832089543871911332}
   writingSpeed: 10
   skippingType: 1
-  <optionsTransitionMode>k__BackingField: 1
+  skipButtons: 20000000
+  <optionsTransitionMode>k__BackingField: 2
   lastActor: {fileID: 0}
 --- !u!114 &620751634
 MonoBehaviour:
@@ -1868,12 +1869,14 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 620751633}
-        m_TargetAssemblyTypeName: ConversationManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ProjectUtils.DialogueSystem.ConversationManager,
+          Assembly-CSharp
         m_MethodName: StartConversation
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 9516e6d5faae48042b6b8740e76e8f75, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Conversation, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: ProjectUtils.DialogueSystem.Conversation,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

@@ -368,9 +368,9 @@ namespace ProjectUtils.Helpers
             {
                 initialColor = spriteRenderer.color;
                 spriteRenderer.color = targetColor;
-                await Task.Delay(waitForSeconds);
+                await UnityDelay.Delay(waitForSeconds);
                 spriteRenderer.color = initialColor;
-                await Task.Delay(waitForSeconds);
+                await UnityDelay.Delay(waitForSeconds);
                 timer += duration / ticks;
             }
 
@@ -429,9 +429,9 @@ namespace ProjectUtils.Helpers
             {
                 initialColor = image.color;
                 image.color = targetColor;
-                await Task.Delay(delay);
+                await UnityDelay.Delay(delay);
                 image.color = initialColor;
-                await Task.Delay(delay);
+                await UnityDelay.Delay(delay);
                 timer += duration / ticks;
             }
 
