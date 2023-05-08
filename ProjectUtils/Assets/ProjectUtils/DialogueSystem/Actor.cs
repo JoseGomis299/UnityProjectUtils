@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProjectUtils.DialogueSystem
 {
     [CreateAssetMenu(fileName = "Actor", menuName = "DialogSystem/Actor")]
-    public class Actor : ScriptableObject
+    public class Actor : ScriptableObject, IEquatable<Actor>
     {
         public new string name;
         public AudioClip voice;
@@ -38,9 +39,7 @@ namespace ProjectUtils.DialogueSystem
             return res;
         }
 
-        public bool Equals(Actor other)
-        {
-            return other.name.Equals(name);
-        }
+        public bool Equals(Actor other) => other != null && other.voice.Equals(voice) && other.emotions.SequenceEqual(emotions) && other.name.Equals(name);
+        
     }
 }

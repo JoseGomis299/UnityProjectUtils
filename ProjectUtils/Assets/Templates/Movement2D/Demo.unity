@@ -966,18 +966,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conversationLayout: {fileID: 6832089545767488776}
-  optionPrefab: {fileID: 5828738263635393270, guid: 4ba58c42a4bbaf74f87a53dce6e0ad65, type: 3}
   actorsImages:
   - {fileID: 6832089545522453044}
   - {fileID: 6832089545631615049}
   optionSelector: {fileID: 6832089544422932350}
-  optionSelectorVerticalLayout: {fileID: 6832089545667972605}
-  conversationText: {fileID: 6832089543871911332}
+  optionPrefab: {fileID: 5828738263635393270, guid: 4ba58c42a4bbaf74f87a53dce6e0ad65, type: 3}
   actorNameText: {fileID: 6832089545027146757}
-  boxTransitions: {fileID: 6832089545338953115}
-  imageTransitionPlayers:
-  - {fileID: 6832089545522453045}
-  - {fileID: 6832089545631615054}
+  conversationText: {fileID: 6832089543871911332}
   writingSpeed: 10
   skippingType: 1
   <optionsTransitionMode>k__BackingField: 1
@@ -5712,7 +5707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6832089545767488779
 RectTransform:
   m_ObjectHideFlags: 0

@@ -7,37 +7,31 @@ using ProjectUtils.Helpers;
 using TMPro;
 using Transitions;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace ProjectUtils.DialogueSystem
 {
     public class ConversationManager : MonoBehaviour
-    {
+    {   
         [Header("Bindings")]
         [SerializeField] private GameObject conversationLayout;
-        [SerializeField] private GameObject optionPrefab;
         [SerializeField] private Image[] actorsImages;
         [SerializeField] private GameObject optionSelector;
-        [SerializeField] private Transform optionSelectorVerticalLayout;
+        [SerializeField] private GameObject optionPrefab;
+        private Transform optionSelectorVerticalLayout;
         [SerializeField] private TMP_Text actorNameText;
         [SerializeField] private TMP_Text conversationText;
-
-        [Header("Transitions")]
-        [SerializeField] private TransitionPlayer boxTransitions;
-        [SerializeField] private TransitionPlayer[] imageTransitionPlayers;
 
         [Header("Conversation Parameters")]
         [SerializeField] private int writingSpeed;
         [SerializeField] private SkippingType skippingType;
+        [SerializeField] private KeyCode[] skipButtons;
 
         [field: SerializeReference]
         public OptionsTransitionMode optionsTransitionMode { get; private set; } = OptionsTransitionMode.DoNotHide;
         [HideInInspector] public Actor lastActor;
-    
-        //Events
-        public Action<Conversation> onConversationFinished; 
-        public event Action<ConversationOption> onOptionSelected;
-        public event Action onEndMainConversation;
+
         private enum SkippingType
         {
             IncreaseWritingSpeed, SkipText
@@ -46,7 +40,17 @@ namespace ProjectUtils.DialogueSystem
         {
             DoNotHideAutomatic, DoNotHide, Hide
         }
+        
+        //Events
+        public Action<Conversation> onConversationFinished; 
+        public event Action<ConversationOption> onOptionSelected;
+        public event Action onEndMainConversation;
+        
+        //TransitionPlayers
+        private TransitionPlayer _boxTransitionPlayer;
+        private TransitionPlayer[] _imageTransitionPlayers;
 
+        //Private fields
         private Task _writeText;
         private bool _skipWriting;
         private Dictionary<Actor, Image> _actorImages;
@@ -56,6 +60,7 @@ namespace ProjectUtils.DialogueSystem
         private int _writingSpeed;
         private bool _fromOptions;
     
+        //Singleton
         public static ConversationManager instance;
 
         private void Awake()
@@ -65,45 +70,46 @@ namespace ProjectUtils.DialogueSystem
         
             _writingSpeed = writingSpeed;
         
+            SetBindings();
+            
             optionSelector.SetActive(false);
             conversationLayout.SetActive(false);
+        }
+
+        private void SetBindings()
+        {
+            optionSelectorVerticalLayout = optionSelector.GetComponentInChildren<VerticalLayoutGroup>(true).transform;
+            _boxTransitionPlayer = actorNameText.gameObject.GetComponentInParent<TransitionPlayer>(true);
+            _imageTransitionPlayers = new[]
+                { actorsImages[0].GetComponent<TransitionPlayer>(), actorsImages[1].GetComponent<TransitionPlayer>() };
         }
     
         public async void StartConversation(Conversation conversation)
         {
+            //Initialize UI
             foreach (var image in actorsImages)
             {
                 image.gameObject.SetActive(false);
             }
             conversationText.text = "";
             actorNameText.text = "";
-        
-            _currentConversation = conversation;
-            _currentConversation.InitializeValues();
             conversationLayout.SetActive(true);
-            actorsImages[0].sprite = _currentConversation.GetCurrentInteraction().actorSprite;
-            await boxTransitions.PlayTransitionAsync(0);
-            InitializeImages();
+            await _boxTransitionPlayer.PlayTransitionAsync(0);
 
+            //Initialize variables
             _actors = new List<Actor>();
             _actorImages = new Dictionary<Actor, Image>();
             _imagesTransitions = new Dictionary<Actor, TransitionPlayer>();
             lastActor = null;
         
+            //Start conversation
+            _currentConversation = conversation;
             _currentConversation.StartConversation();
         }
 
-        private void InitializeImages()
-        {
-            for (var i = 1; i < actorsImages.Length; i++)
-            {
-                var image = actorsImages[i];
-                image.gameObject.SetActive(false);
-            }
-        }
-    
         private void Update()
         {
+            //Handle Input
             switch (skippingType)
             {
                 case SkippingType.IncreaseWritingSpeed:
@@ -117,7 +123,7 @@ namespace ProjectUtils.DialogueSystem
     
         private void HandleWritingSpeed()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (skipButtons.Any(Input.GetKeyDown) || Input.GetMouseButtonDown(0))
             {
                 if (_writeText == null) return;
                 if (_writeText.IsCompleted)
@@ -137,7 +143,7 @@ namespace ProjectUtils.DialogueSystem
     
         private void HandelSkipText()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (skipButtons.Any(Input.GetKeyDown) || Input.GetMouseButtonDown(0))
             {
                 if (_writeText == null) return;
                 if (_writeText.IsCompleted)
@@ -161,6 +167,7 @@ namespace ProjectUtils.DialogueSystem
 
         private async Task _WriteTextAsync(string text)
         {
+            //Reset text
             actorNameText.text = _currentConversation.GetCurrentInteraction().actor.name;
             conversationText.text = "";
         
@@ -172,7 +179,8 @@ namespace ProjectUtils.DialogueSystem
                     _skipWriting = false;
                     break;
                 }
-            
+                
+                //Build the string and play voice sound
                 stringBuilder.Append(character);
                 conversationText.text = stringBuilder.ToString();
                 if(AudioManager.Instance != null && _currentConversation.GetCurrentInteraction().actor.voice!= null) AudioManager.Instance.PlaySound(_currentConversation.GetCurrentInteraction().actor.voice);
@@ -183,16 +191,18 @@ namespace ProjectUtils.DialogueSystem
 
         public async void HideConversationAsync()
         {
+            //Reset _writeText
             _writeText = null;
 
-            await GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
-            Task[] tasks = new Task[imageTransitionPlayers.Length];
-            for (int i = 0; i < imageTransitionPlayers.Length; i++)
+            //Play animations and invoke onEndMainConversation
+            await _imagesTransitions[lastActor].PlayTransitionAsync(2);
+            Task[] tasks = new Task[_imageTransitionPlayers.Length];
+            for (int i = 0; i < _imageTransitionPlayers.Length; i++)
             {
-                tasks[i] = imageTransitionPlayers[i].PlayTransitionAsync(3);
+                tasks[i] = _imageTransitionPlayers[i].PlayTransitionAsync(3);
             }
             await Task.WhenAll(tasks);
-            await boxTransitions.PlayTransitionAsync(1);
+            await _boxTransitionPlayer.PlayTransitionAsync(1);
             conversationLayout.SetActive(false);
             onEndMainConversation?.Invoke();
         }
@@ -202,42 +212,60 @@ namespace ProjectUtils.DialogueSystem
             Interaction currentInteraction = _currentConversation.GetCurrentInteraction();
             bool isNew = AddActorToCurrentConversation(currentInteraction.actor) || !IsOnStage(currentInteraction.actor);
 
+            //If current actor is different to the last actor make last actor hide 
             if (lastActor != null && !currentInteraction.actor.Equals(lastActor))
             {
+                //Check if current actor wasn't on the stage
                 if (!IsOnStage(currentInteraction.actor) && actorsImages.All(x => x.gameObject.activeInHierarchy))
                 {
-                    if(_imagesTransitions[lastActor].Equals(_imagesTransitions[currentInteraction.actor]))
-                        await GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
-                    else GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
-                    await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(3);
-                }
-                else if(!_fromOptions) GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
-            }
-            SetActorsImageSprite(currentInteraction.actor, currentInteraction.actorSprite);
+                    //Check if it shares image with last actor
+                    if (_imagesTransitions[lastActor].Equals(_imagesTransitions[currentInteraction.actor]))
+                    {
+                        //Since it is already behind, we don't have to do it again
+                        if (optionsTransitionMode != OptionsTransitionMode.Hide)
+                            await _imagesTransitions[lastActor].PlayTransitionAsync(2);
+                    }
+                    else _imagesTransitions[lastActor].PlayTransitionAsync(2);
 
+                    await _imagesTransitions[currentInteraction.actor].PlayTransitionAsync(3);
+                }
+                else if(!_fromOptions) await _imagesTransitions[(lastActor)].PlayTransitionAsync(2);
+            }
+            
+            //Set new sprite to the current actor
+            _actorImages[currentInteraction.actor].sprite = currentInteraction.actorSprite;
+
+            //If current actor is new, make it appear
             if(isNew || !_actorImages[currentInteraction.actor].gameObject.activeInHierarchy) 
             {
                 _actorImages[currentInteraction.actor].gameObject.SetActive(true);
-                await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(0);
+                await _imagesTransitions[currentInteraction.actor].PlayTransitionAsync(0);
             }
-
+            
+            //Make current actor go to the front
             if ((lastActor != null && !currentInteraction.actor.Equals(lastActor)) || isNew)
             {
-                await GetActorsImageTransition(currentInteraction.actor).PlayTransitionAsync(1);
+                await _imagesTransitions[currentInteraction.actor].PlayTransitionAsync(1);
             }
+            
+            //Reset _fromOptions
             _fromOptions = false;
         }
 
         public void ShowOptions()
         {
+            //Reset _writeText to block input
             _writeText = null;
+            
+            //Initialize options menu
             optionSelector.SetActive(true);
             if (optionsTransitionMode == OptionsTransitionMode.Hide)
             {
-                GetActorsImageTransition(lastActor).PlayTransitionAsync(2);
+                _imagesTransitions[lastActor].PlayTransitionAsync(2);
                 _fromOptions = true;
             }
 
+            //Create option buttons
             foreach (var option in _currentConversation.options)
             {
                 GameObject optionButton = Instantiate(optionPrefab, optionSelectorVerticalLayout);
@@ -245,10 +273,9 @@ namespace ProjectUtils.DialogueSystem
                 optionButton.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     _currentConversation = option.nextConversation;
-                    if (optionsTransitionMode == OptionsTransitionMode.Hide)
+                    if (optionsTransitionMode == OptionsTransitionMode.Hide && IsOnStage(_currentConversation.interactions[0].actor))
                     {
-                        _currentConversation.InitializeValues();
-                        GetActorsImageTransition(_currentConversation.GetCurrentInteraction().actor).PlayTransitionAsync(1);
+                        _imagesTransitions[_currentConversation.interactions[0].actor].PlayTransitionAsync(1);
                     }
 
                     _currentConversation.StartConversation();
@@ -264,22 +291,7 @@ namespace ProjectUtils.DialogueSystem
             optionSelector.SetActive(false);
         }
 
-        public void SetActorsImageSprite(Actor actor, Sprite sprite)
-        {
-            _actorImages[actor].sprite = sprite;
-        }
-
-        private bool HasActed(Actor value)
-        {
-            foreach (var actor in _actors)
-            {
-                if (actor.Equals(value)) return true;
-            }
-
-            return false;
-        }
-
-        public bool AddActorToCurrentConversation(Actor actor)
+        private bool AddActorToCurrentConversation(Actor actor)
         {
             if(HasActed(actor)) return false;
 
@@ -287,26 +299,12 @@ namespace ProjectUtils.DialogueSystem
 
             _actors.Add(actor);
             _actorImages.Add(actor, actorsImages[index]);
-            _imagesTransitions.Add(actor, imageTransitionPlayers[index]);
+            _imagesTransitions.Add(actor, _imageTransitionPlayers[index]);
             return true;
         }
 
-        private TransitionPlayer GetActorsImageTransition(Actor actor)
-        {
-            return _imagesTransitions[actor];
-        }
+        private bool IsOnStage(Actor actor) => actor.GetEmotionsNames().Any(emotion => _actorImages[actor].sprite.Equals(actor.GetEmotionSprite(emotion)));
+        private bool HasActed(Actor value) => _actors.Any(actor => actor.Equals(value));
 
-        private bool IsOnStage(Actor actor)
-        {
-            foreach (var actorsImage in actorsImages)
-            {
-                foreach (var emotion in actor.GetEmotionsNames())
-                {
-                    if (actorsImage.sprite.Equals(actor.GetEmotionSprite(emotion))) return true;
-                }
-            }
-
-            return false;
-        }
     }
 }
