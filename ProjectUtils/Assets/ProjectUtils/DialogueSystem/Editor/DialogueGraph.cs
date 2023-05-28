@@ -26,7 +26,7 @@ namespace ProjectUtils.DialogueSystem.Editor
             ConstructGraphView();
             GenerateToolBar();
             GenerateMiniMap();
-            // GenerateBlackBoard();
+            GenerateBlackBoard();
         }
 
         private void GenerateBlackBoard()

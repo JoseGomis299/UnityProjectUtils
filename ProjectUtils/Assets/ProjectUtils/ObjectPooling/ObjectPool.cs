@@ -15,7 +15,7 @@ namespace ProjectUtils.ObjectPooling
         [Serializable]
         struct PoolObject
         {
-            public GameObject prefab;
+            public GameObject gameObject;
             public int quantity;
             public float lifeTime;
             [HideInInspector] public float activeTime;
@@ -36,10 +36,10 @@ namespace ProjectUtils.ObjectPooling
             {
                 for (int j = 0; j < initialObjectPool[i].quantity; j++)
                 {
-                    var temp = Instantiate(initialObjectPool[i].prefab, _objectPoolParent.transform);
+                    var temp = Instantiate(initialObjectPool[i].gameObject, _objectPoolParent.transform);
                     _objectPool.Add(new PoolObject
                     {
-                        prefab = temp,  
+                        gameObject = temp,  
                         quantity = 1,
                         lifeTime = initialObjectPool[i].lifeTime 
                     });
@@ -48,41 +48,42 @@ namespace ProjectUtils.ObjectPooling
             }
         }
 
-        public GameObject InstantiateFromPool(GameObject prefab, Vector3 position, Quaternion rotation, bool disappearsWithTime)
+        public GameObject InstantiateFromPool(GameObject prefab, Vector3 position, Quaternion rotation, bool disappearsWithTime = false)
         {
             //Searches for every object in the pool and see if it is an instance of the prefab and it is inactive
             for (var i = 0; i < _objectPool.Count; i++)
             {
                 var prefabFromPool = _objectPool[i];
-                if (prefabFromPool.prefab.name != $"{prefab.name}(Clone)" ||
-                    prefabFromPool.prefab.activeInHierarchy) continue;
+                if (prefabFromPool.gameObject.name != $"{prefab.name}(Clone)" ||
+                    prefabFromPool.gameObject.activeInHierarchy) continue;
 
-                prefabFromPool.prefab.SetActive(true);
                 prefabFromPool.activeTime = disappearsWithTime ? Time.time : float.MaxValue;
-                prefabFromPool.prefab.transform.position = position;
-                prefabFromPool.prefab.transform.localRotation = rotation;
+                prefabFromPool.gameObject.transform.position = position;
+                prefabFromPool.gameObject.transform.localRotation = rotation;
                 _objectPool[i] = prefabFromPool;
-                return prefabFromPool.prefab;
+                prefabFromPool.gameObject.SetActive(true);
+                return prefabFromPool.gameObject;
             }
 
             //If haven't found any valid object, create a new one
-            var temp = Instantiate(prefab, _objectPoolParent.transform);
+            prefab.transform.position = position;
+            prefab.transform.localRotation = rotation;
+            GameObject temp = Instantiate(prefab, _objectPoolParent.transform);
+            
             PoolObject poolObject = new PoolObject
             {
-                prefab = temp,
+                gameObject = temp,
                 quantity = 1,
                 lifeTime = GetObjectLifeSpan(temp),
                 activeTime = disappearsWithTime ? Time.time : float.MaxValue
             };
             _objectPool.Add(poolObject);
-            temp.transform.position = position;
-            temp.transform.localRotation = rotation;
             return temp;
         }
         
-        public GameObject InstantiateFromPoolIndex(int prefabIndex, Vector3 position, Quaternion rotation, bool disappearsWithTime)
+        public GameObject InstantiateFromPoolIndex(int prefabIndex, Vector3 position, Quaternion rotation, bool disappearsWithTime = false)
         {
-            return InstantiateFromPool(initialObjectPool[prefabIndex].prefab, position, rotation, disappearsWithTime);
+            return InstantiateFromPool(initialObjectPool[prefabIndex].gameObject, position, rotation, disappearsWithTime);
         }
 
 
@@ -92,10 +93,10 @@ namespace ProjectUtils.ObjectPooling
             
             foreach (var poolObject in _objectPool)
             {
-                if (!poolObject.prefab.activeInHierarchy
+                if (!poolObject.gameObject.activeInHierarchy
                     || poolObject.activeTime > Time.time - poolObject.lifeTime) continue;
 
-                poolObject.prefab.SetActive(false);
+                poolObject.gameObject.SetActive(false);
             }
         }
 
@@ -103,7 +104,7 @@ namespace ProjectUtils.ObjectPooling
         {
             for (int i = 0; i < initialObjectPool.Count; i++)
             {
-                if(prefab.name == $"{initialObjectPool[i].prefab.name}(Clone)")
+                if(prefab.name == $"{initialObjectPool[i].gameObject.name}(Clone)")
                 {
                     return initialObjectPool[i].lifeTime;
                 }

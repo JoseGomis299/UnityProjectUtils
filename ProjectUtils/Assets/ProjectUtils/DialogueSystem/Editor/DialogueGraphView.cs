@@ -7,6 +7,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = System.Object;
 
 namespace ProjectUtils.DialogueSystem.Editor
 {
@@ -37,6 +38,8 @@ namespace ProjectUtils.DialogueSystem.Editor
         
             serializeGraphElements += CutCopyOperation;
             unserializeAndPaste += PasteOperation;
+            RegisterCallback<DragUpdatedEvent>(OnDragUpdatedEvent);
+            RegisterCallback<DragPerformEvent>(OnDragPerformEvent);
         }
 
         private void PasteOperation(string operationname, string data)
@@ -336,10 +339,15 @@ namespace ProjectUtils.DialogueSystem.Editor
             property.propertyName = localPropertyName;
             property.propertyValue = localPropertyValue;
             exposedProperties.Add(property);
+            
 
             var container = new VisualElement();
-            var blackboardField = new BlackboardField { text = property.propertyName, typeText = "string" };
+            var blackboardField = new BlackboardField {name = localPropertyName, text = property.propertyName, typeText = "string" };
             container.Add(blackboardField);
+
+            var dragger = new BlackboardFieldDragger(this);
+            blackboardField.AddManipulator(dragger);
+            
 
             var propertyValueTextField = new TextField("Value: ")
             {
@@ -354,6 +362,43 @@ namespace ProjectUtils.DialogueSystem.Editor
             blackboard.Add(blackBoardValueRow);
 
             blackboard.Add(container);
+        }
+        
+        private void OnDragUpdatedEvent(DragUpdatedEvent evt)
+        {
+            if (DragAndDrop.objectReferences.Length > 0)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                evt.StopPropagation();
+            }
+        }
+
+        private void OnDragPerformEvent(DragPerformEvent evt)
+        {
+            if (DragAndDrop.objectReferences.Length > 0)
+            {
+                // Handle the dropped object(s)
+                foreach (Object obj in DragAndDrop.objectReferences)
+                {
+                    // Check if the dragged object is a BlackboardField
+                    BlackboardField blackboardField = obj as BlackboardField;
+                    if (blackboardField != null)
+                    {
+                        // Create a new node in the graph based on the blackboardField
+                        CreateNodeInGraph(blackboardField);
+                    }
+                }
+
+                DragAndDrop.AcceptDrag();
+                evt.StopPropagation();
+            }
+        }
+        
+        private void CreateNodeInGraph(BlackboardField blackboardField)
+        {
+            // Create a new node in the graph based on the blackboardField
+            // Perform any necessary logic to extract data from the blackboardField and create the corresponding node
+            // ...
         }
 
         public void ClearBlackBoardAndExposedProperties()

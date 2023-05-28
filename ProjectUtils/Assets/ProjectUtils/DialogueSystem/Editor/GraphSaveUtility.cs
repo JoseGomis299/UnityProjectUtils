@@ -152,6 +152,8 @@ namespace ProjectUtils.DialogueSystem.Editor
             }
             return true;
         }
+        
+        
     
         public void LoadGraph(string fileName)
         {
@@ -165,7 +167,7 @@ namespace ProjectUtils.DialogueSystem.Editor
             ClearGraph();
             CreateNodes();
             ConnectNodes();
-            //CreateExposedProperties();
+            CreateExposedProperties();
         }
 
         private void CreateExposedProperties()
