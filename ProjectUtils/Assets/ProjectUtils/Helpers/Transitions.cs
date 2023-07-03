@@ -216,9 +216,9 @@ namespace ProjectUtils.Helpers
         /// <param name="targetRotation">The final rotation</param>
         /// <param name="time">The duration in seconds of the rotation effect</param>
         /// </summary>
-        public static void DoRotate(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled) => 
-            CoroutineController.Start(doRotateEnumerator(transform, targetRotation, time, timeScale));
-        private static IEnumerator doRotateEnumerator(Transform transform, Quaternion targetRotation, float time, TimeScales timeScale)
+        public static void RotateTo(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled) => 
+            CoroutineController.Start(RotateToEnumerator(transform, targetRotation, time, timeScale));
+        private static IEnumerator RotateToEnumerator(Transform transform, Quaternion targetRotation, float time, TimeScales timeScale)
         {
             float timer = GetDeltaTime(timeScale);
             Quaternion rotation = transform.rotation;
@@ -238,7 +238,7 @@ namespace ProjectUtils.Helpers
         /// <param name="targetRotation">The final rotation</param>
         /// <param name="time">The duration in seconds of the rotation effect</param>
         /// </summary>
-        public static async Task DoRotateAsync(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        public static async Task RotateToAsync(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled)
         {
             float timer = GetDeltaTime(timeScale);
             Quaternion rotation = transform.rotation;
@@ -258,9 +258,9 @@ namespace ProjectUtils.Helpers
         /// <param name="targetRotation">The final rotation</param>
         /// <param name="time">The duration in seconds of the rotation effect</param>
         /// </summary>
-        public static void DoRotateLocal(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled) => 
-            CoroutineController.Start(doRotateLocalEnumerator(transform, targetRotation, time, timeScale));
-        private static IEnumerator doRotateLocalEnumerator(Transform transform, Quaternion targetRotation, float time, TimeScales timeScale)
+        public static void RotateToLocal(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled) => 
+            CoroutineController.Start(RotateToLocalEnumerator(transform, targetRotation, time, timeScale));
+        private static IEnumerator RotateToLocalEnumerator(Transform transform, Quaternion targetRotation, float time, TimeScales timeScale)
         {
             float timer = GetDeltaTime(timeScale);
             Quaternion rotation = transform.localRotation;
@@ -280,7 +280,7 @@ namespace ProjectUtils.Helpers
         /// <param name="targetRotation">The final rotation</param>
         /// <param name="time">The duration in seconds of the rotation effect</param>
         /// </summary>
-        public static async Task DoRotateLocalAsync(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        public static async Task RotateToLocalAsync(this Transform transform, Quaternion targetRotation, float time, TimeScales timeScale = TimeScales.Unscaled)
         {
             float timer = GetDeltaTime(timeScale);
             Quaternion rotation = transform.localRotation;
@@ -293,6 +293,62 @@ namespace ProjectUtils.Helpers
             }
 
             transform.localRotation = targetRotation;
+        }
+
+        /// <summary>
+        /// <para>Rotates the object a certain rotation in world space in a determined time</para>
+        /// <param name="rotation">The rotation applied in euler angles</param>
+        /// <param name="time">The duration in seconds of the rotation effect</param>
+        /// </summary>
+        public static void DoRotate(this Transform transform, Vector3 rotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        {
+            Quaternion targetRotation = transform.rotation;
+            Quaternion quaternion = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
+            targetRotation *= Quaternion.Inverse(targetRotation) * quaternion * targetRotation;
+            
+            transform.RotateTo(targetRotation, time, timeScale);
+        }
+
+        /// <summary>
+        /// <para>Rotates the object a certain rotation in world space in a determined time</para>
+        /// <param name="rotation">The rotation applied in euler angles</param>
+        /// <param name="time">The duration in seconds of the rotation effect</param>
+        /// </summary>
+        public static async Task DoRotateAsync(this Transform transform, Vector3 rotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        {
+            Quaternion targetRotation = transform.rotation;
+            Quaternion quaternion = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
+            targetRotation *= Quaternion.Inverse(targetRotation) * quaternion * targetRotation;
+            
+            await transform.RotateToAsync(targetRotation, time, timeScale);
+        }
+        
+        /// <summary>
+        /// <para>Rotates the object a certain rotation in local space in a determined time</para>
+        /// <param name="rotation">The rotation applied in euler angles</param>
+        /// <param name="time">The duration in seconds of the rotation effect</param>
+        /// </summary>
+        public static void DoRotateLocal(this Transform transform, Vector3 rotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        {
+            Quaternion targetRotation = transform.rotation;
+            Quaternion quaternion = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
+            targetRotation *= Quaternion.Inverse(targetRotation) * quaternion * targetRotation;
+            
+            transform.RotateToLocal(targetRotation, time, timeScale);
+        }
+
+        /// <summary>
+        /// <para>Rotates the object a certain rotation in local space in a determined time</para>
+        /// <param name="rotation">The rotation applied in euler angles</param>
+        /// <param name="time">The duration in seconds of the rotation effect</param>
+        /// </summary>
+        public static async Task DoRotateLocalAsync(this Transform transform, Vector3 rotation, float time, TimeScales timeScale = TimeScales.Unscaled)
+        {
+            Quaternion targetRotation = transform.rotation;
+            Quaternion quaternion = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
+            targetRotation *= Quaternion.Inverse(targetRotation) * quaternion * targetRotation;
+            
+            await transform.RotateToLocalAsync(targetRotation, time, timeScale);
         }
 
         private static Dictionary<int, bool> _blinking;

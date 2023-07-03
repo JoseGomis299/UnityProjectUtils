@@ -45,6 +45,7 @@ namespace ProjectUtils.GridSystem.PathFinding
                 NativeArray<PathNode> pathNodeArray =
                     new NativeArray<PathNode>(gridSize.x * gridSize.y, Allocator.Temp);
 
+                //Initialize Grid
                 for (int x = 0; x < gridSize.x; x++)
                 {
                     for (int y = 0; y < gridSize.y; y++)
@@ -75,8 +76,8 @@ namespace ProjectUtils.GridSystem.PathFinding
                 neighbourOffsetArray[5] = new int2(+1, -1); //Right Down
                 neighbourOffsetArray[6] = new int2(0, -1); //Down
                 neighbourOffsetArray[7] = new int2(0, -1); //Up
-
-
+                
+                //Refresh startNode costs
                 int endNodeIndex = CalculateIndex(endPosition.x, endPosition.y, gridSize.x);
                 PathNode startNode = pathNodeArray[CalculateIndex(startPosition.x, startPosition.y, gridSize.x)];
                 startNode.gCost = 0;
@@ -98,6 +99,7 @@ namespace ProjectUtils.GridSystem.PathFinding
                         break;
                     }
 
+                    //Remove current node from openList
                     for (int i = 0; i < openList.Length; i++)
                     {
                         if (openList[i] == currentNodeIndex)
@@ -133,11 +135,12 @@ namespace ProjectUtils.GridSystem.PathFinding
                                              CalculateDistanceCost(currentNodePosition, neighbourPosition);
                         if (tentativeGCost < neighbourNode.gCost)
                         {
+                            //Refresh neighbour costs
                             neighbourNode.cameFromNodeIndex = currentNodeIndex;
                             neighbourNode.gCost = tentativeGCost;
                             neighbourNode.CalculateFCost();
                             pathNodeArray[neighbourNodeIndex] = neighbourNode;
-
+                            
                             if (!openList.Contains(neighbourNode.index))
                             {
                                 openList.Add(neighbourNode.index);
@@ -166,23 +169,22 @@ namespace ProjectUtils.GridSystem.PathFinding
                 //Didn't found a path
                 return new NativeList<int2>(Allocator.Temp);
             }
-            else
+            
+            //Found a path
+            // CalculatePath(pathNodeArray, endNode);
+            NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
+            path.Add(new int2(endNode.x, endNode.y));
+
+            PathNode currentNode = endNode;
+            while (currentNode.cameFromNodeIndex != -1)
             {
-                //Found a path
-                CalculatePath(pathNodeArray, endNode);
-                NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
-                path.Add(new int2(endNode.x, endNode.y));
-
-                PathNode currentNode = endNode;
-                while (currentNode.cameFromNodeIndex != -1)
-                {
-                    PathNode cameFromNode = pathNodeArray[currentNode.cameFromNodeIndex];
-                    path.Add(new int2(cameFromNode.x, cameFromNode.y));
-                    currentNode = cameFromNode;
-                }
-
-                return path;
+                PathNode cameFromNode = pathNodeArray[currentNode.cameFromNodeIndex];
+                path.Add(new int2(cameFromNode.x, cameFromNode.y));
+                currentNode = cameFromNode;
             }
+
+            return path;
+            
         }
 
         private static bool IsPositionInsideGrid(int2 gridPosition, int2 gridSize)
